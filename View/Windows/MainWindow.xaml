@@ -17,7 +17,7 @@
             <MenuItem Header="Файл">
                 <MenuItem Header="Открыть"/>
                 <MenuItem Header="Экспорт"/>
-                <MenuItem Header="Выход"/>
+                <MenuItem Header="Выход" Command="{Binding CloseApplicationCommand}"/>
             </MenuItem>
             
             <MenuItem Header="Помощь">
