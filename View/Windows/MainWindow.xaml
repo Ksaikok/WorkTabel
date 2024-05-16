@@ -8,21 +8,27 @@
         xmlns:vm="clr-namespace:WorkTabel.ViewModels"
         xmlns:local="clr-namespace:WorkTabel"
         mc:Ignorable="d"
-        Title="{Binding Path=Title}" Height="450" Width="800">
+        Title="{Binding Path=Title}" Height="900" Width="1600">
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
-    
+
 
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            
-            <MenuItem Header="Файл">
+        <Menu DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0, 0, 0, 0">
+
+            <MenuItem Header="Файл" ClipToBounds="True">
                 <MenuItem Header="Открыть"/>
                 <MenuItem Header="Экспорт"/>
                 <MenuItem Header="Выход" Command="{Binding CloseApplicationCommand}"/>
             </MenuItem>
-            
+
+            <MenuItem Header="База данных">
+                <MenuItem Header="Проверить подключение"/>
+                <MenuItem Header="Прервать подкоючение"/>
+                <MenuItem Header="Подключиться"/>
+            </MenuItem>
+
             <MenuItem Header="Помощь">
                 <MenuItem Header="О программе"/>
             </MenuItem>
@@ -39,19 +45,22 @@
         </StatusBar>
 
         <TabControl>
-            <TabItem Header="Вкладка 1">
+            <TabItem Header="Вкладка 1" HorizontalAlignment="Left">
                 <Grid>
-                    
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="63*"/>
-                        <RowDefinition Height="325*"/>
-                    </Grid.RowDefinitions>
-                    
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="157*"/>
-                        <ColumnDefinition Width="637*"/>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    
+
+                    <GroupBox Grid.Column="0" Header="Отделы">
+                        <ListBox  />
+                    </GroupBox>
+                    <GroupBox Grid.Column="1" Header="Табель" >
+                        <DataGrid>
+
+                        </DataGrid>
+                    </GroupBox>
+
                 </Grid>
             </TabItem>
         </TabControl>
