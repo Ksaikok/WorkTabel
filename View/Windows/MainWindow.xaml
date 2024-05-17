@@ -14,28 +14,81 @@
     </Window.DataContext>
 
 
-    <DockPanel>
-        <Menu DockPanel.Dock="Top" VerticalAlignment="Top" Margin="0, 0, 0, 0">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="730*"/>
+            <RowDefinition Height="140*"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <Menu VerticalAlignment="Top" FontSize="14" Height="40">
 
-            <MenuItem Header="Файл" ClipToBounds="True">
+            <MenuItem Header="Файл" ClipToBounds="True" Height="40">
                 <MenuItem Header="Открыть"/>
                 <MenuItem Header="Экспорт"/>
                 <MenuItem Header="Выход" Command="{Binding CloseApplicationCommand}"/>
             </MenuItem>
 
-            <MenuItem Header="База данных">
+            <MenuItem Header="База данных" Height="40">
                 <MenuItem Header="Проверить подключение"/>
                 <MenuItem Header="Прервать подкоючение"/>
                 <MenuItem Header="Подключиться"/>
             </MenuItem>
 
-            <MenuItem Header="Помощь">
+            <MenuItem Header="Помощь" Height="40">
                 <MenuItem Header="О программе"/>
             </MenuItem>
 
         </Menu>
 
-        <StatusBar DockPanel.Dock="Bottom">
+
+
+        <TabControl Margin="0,40,0,0" HorizontalContentAlignment="Left">
+            <TabItem Header="Табель" Padding="0,0,0,0" Height="25">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Grid.Column="0" Header="Отделы">
+                        <ListBox d:ItemsSource="{d:SampleData ItemCount=25}"  />
+                    </GroupBox>
+                    <GroupBox Grid.Column="1" Header="Табель" >
+                        <DataGrid d:ItemsSource="{d:SampleData ItemCount=25}">
+
+                        </DataGrid>
+                    </GroupBox>
+
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Сотрудники" HorizontalAlignment="Left" Padding="0,0,0,0" Height="25">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Grid.Column="0" Header="Отделы">
+                        <ListBox d:ItemsSource="{d:SampleData ItemCount=25}"  />
+                    </GroupBox>
+                    <GroupBox Grid.Column="1" Header="Табель" >
+                        <DataGrid d:ItemsSource="{d:SampleData ItemCount=25}">
+
+                        </DataGrid>
+                    </GroupBox>
+
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <Grid Grid.Row="1" MinHeight="100">
+            <GroupBox Grid.Column="0" Header="Тип посещения">
+                <ListBox  />
+            </GroupBox>
+        </Grid>
+
+        <StatusBar VerticalAlignment="Center" Grid.Row="3">
             <StatusBarItem>
                 <TextBlock Text="Привет"/>
             </StatusBarItem>
@@ -44,25 +97,6 @@
             </StatusBarItem>
         </StatusBar>
 
-        <TabControl>
-            <TabItem Header="Вкладка 1" HorizontalAlignment="Left">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="300"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
 
-                    <GroupBox Grid.Column="0" Header="Отделы">
-                        <ListBox  />
-                    </GroupBox>
-                    <GroupBox Grid.Column="1" Header="Табель" >
-                        <DataGrid>
-
-                        </DataGrid>
-                    </GroupBox>
-
-                </Grid>
-            </TabItem>
-        </TabControl>
-    </DockPanel>
+    </Grid>
 </Window>
