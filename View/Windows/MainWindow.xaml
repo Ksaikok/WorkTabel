@@ -53,7 +53,7 @@
                     <GroupBox Grid.Column="0" Header="Отделы">
                         <ListBox d:ItemsSource="{d:SampleData ItemCount=25}"  />
                     </GroupBox>
-                    <GroupBox Grid.Column="1" Header="Табель" >
+                    <GroupBox Grid.Column="1" Header="Табель">
                         <DataGrid d:ItemsSource="{d:SampleData ItemCount=25}">
 
                         </DataGrid>
@@ -72,7 +72,7 @@
                     <GroupBox Grid.Column="0" Header="Отделы">
                         <ListBox d:ItemsSource="{d:SampleData ItemCount=25}"  />
                     </GroupBox>
-                    <GroupBox Grid.Column="1" Header="Табель" >
+                    <GroupBox Grid.Column="1" Header="Сотрудники" >
                         <DataGrid d:ItemsSource="{d:SampleData ItemCount=25}">
 
                         </DataGrid>
@@ -96,6 +96,16 @@
                 <ProgressBar Width="120" Height="14" Value="30"/>
             </StatusBarItem>
         </StatusBar>
+        <Button 
+            Content="Button" Margin="0,70,20,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="25"
+            />
+        <Button 
+            Content="Button" Margin="0,70,100,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="25"
+            />
+
+        <DatePicker Margin="0,65,180,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="130" Background="#FF3F51B5" BorderBrush="#E5000000" Height="35" Foreground="#FF1D1D1D"/>
+
+
 
 
     </Grid>
