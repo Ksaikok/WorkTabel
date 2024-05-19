@@ -68,7 +68,11 @@
                     </Grid.ColumnDefinitions>
 
                     <GroupBox Grid.Column="0" Header="Отделы">
-                        <ListBox d:ItemsSource="{d:SampleData ItemCount=25}"  Background="White"/>
+                        <DataGrid ItemsSource="{Binding DepartmentsData}" AutoGenerateColumns="False" Background="White">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Название отдела" Binding="{Binding Name}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
                     </GroupBox>
                     <GroupBox Grid.Column="1" Header="Сотрудники" >
                         <DataGrid d:ItemsSource="{d:SampleData ItemCount=25}">

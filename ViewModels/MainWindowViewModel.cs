@@ -22,6 +22,9 @@ namespace WorkTabel.ViewModels
             System.Windows.Application.Current.Shutdown();
         }
         #endregion
+
+        
+
         #endregion
 
         public MainWindowViewModel()
@@ -30,6 +33,8 @@ namespace WorkTabel.ViewModels
             CloseApplicationCommand = new LambdaCommand(OnCloseApplicationCommandExecuted, CanCloseApplicationCommandExecute);
 
             #endregion
+            
+
         }
         //internal class MainWindowViewModel : ViewModel
         //{
