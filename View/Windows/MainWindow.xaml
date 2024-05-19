@@ -3,30 +3,97 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="http://schemas.fontawesome.com/icons/"
+        xmlns:cmd="clr-namespace:WorkTabel.Infrastructure.Commands"
         xmlns:vm="clr-namespace:WorkTabel.ViewModels"
         xmlns:local="clr-namespace:WorkTabel"
         mc:Ignorable="d"
-        Title="{Binding Path=Title}" Height="450" Width="800">
+        Title="{Binding Path=Title}" Height="900" Width="1600" Background="#FF6181D0">
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
 
-    <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            
-            <MenuItem Header="Файл">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="730*"/>
+            <RowDefinition Height="140*"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <Menu VerticalAlignment="Top" FontSize="14" Height="40" Background="#00000000">
+
+            <MenuItem Header="Файл" ClipToBounds="True" Height="40">
                 <MenuItem Header="Открыть"/>
                 <MenuItem Header="Экспорт"/>
                 <MenuItem Header="Выход" Command="{Binding CloseApplicationCommand}"/>
             </MenuItem>
-            
-            <MenuItem Header="Помощь">
+
+            <MenuItem Header="База данных" Height="40">
+                <MenuItem Header="Проверить подключение"/>
+                <MenuItem Header="Прервать подкоючение"/>
+                <MenuItem Header="Подключиться"/>
+            </MenuItem>
+
+            <MenuItem Header="Помощь" Height="40">
                 <MenuItem Header="О программе"/>
             </MenuItem>
 
         </Menu>
 
-        <StatusBar DockPanel.Dock="Bottom">
+
+
+        <TabControl Margin="0,40,0,0" HorizontalContentAlignment="Left">
+            <TabItem Header="Табель" Padding="0,0,0,0" Height="25">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Grid.Column="0" Header="Отделы">
+                        <ListBox d:ItemsSource="{d:SampleData ItemCount=25}" Background="White"  />
+                    </GroupBox>
+                    <GroupBox Grid.Column="1" Header="Табель">
+                        <DataGrid d:ItemsSource="{d:SampleData ItemCount=25}" GridLinesVisibility="Horizontal"/>
+                    </GroupBox>
+
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Сотрудники" HorizontalAlignment="Left" Padding="0,0,0,0" Height="25">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <GroupBox Grid.Column="0" Header="Отделы">
+                        <DataGrid ItemsSource="{Binding DepartmentsData}" AutoGenerateColumns="False" Background="White">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Название отдела" Binding="{Binding Name}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </GroupBox>
+                    <GroupBox Grid.Column="1" Header="Сотрудники" >
+                        <DataGrid d:ItemsSource="{d:SampleData ItemCount=25}">
+
+                        </DataGrid>
+                    </GroupBox>
+
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+        <Grid Grid.Row="1" MinHeight="100">
+            <GroupBox Grid.Column="0" Header="Тип посещения">
+                <Grid Background="White">
+                    <!--для динамичесого создания таблицы нужно исрользовать ItemControl-->
+                    
+                </Grid>
+            </GroupBox>
+        </Grid>
+
+        <StatusBar VerticalAlignment="Center" Grid.Row="3">
             <StatusBarItem>
                 <TextBlock Text="Привет"/>
             </StatusBarItem>
@@ -34,23 +101,27 @@
                 <ProgressBar Width="120" Height="14" Value="30"/>
             </StatusBarItem>
         </StatusBar>
+        <Button 
+            Content="Button" Margin="0,70,20,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="25"
+            />
+        <Button 
+            Content="Button" Margin="0,70,100,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="25"
+            />
 
-        <TabControl>
-            <TabItem Header="Вкладка 1">
-                <Grid>
-                    
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="63*"/>
-                        <RowDefinition Height="325*"/>
-                    </Grid.RowDefinitions>
-                    
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="157*"/>
-                        <ColumnDefinition Width="637*"/>
-                    </Grid.ColumnDefinitions>
-                    
-                </Grid>
-            </TabItem>
-        </TabControl>
-    </DockPanel>
+        <DatePicker 
+            Margin="0,65,180,0" VerticalAlignment="Top" HorizontalAlignment="Right" 
+            Width="130" BorderBrush="#E5000000" Height="35" FontWeight="Bold" 
+            Foreground="#FF1D1D1D" FontSize="14" Language="ru"  >
+            <DatePicker.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FF3F51B5" Offset="0.004"/>
+                    <GradientStop Color="#FF898BE8" Offset="1"/>
+                </LinearGradientBrush>
+            </DatePicker.Background>
+        </DatePicker>
+
+
+
+
+    </Grid>
 </Window>
