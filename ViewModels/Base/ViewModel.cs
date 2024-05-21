@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WorkTabel.ViewModels.Base
 {
@@ -14,7 +7,7 @@ namespace WorkTabel.ViewModels.Base
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected  virtual void OnPropertyChanged([CallerMemberName] string PropertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string PropertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
         }
@@ -26,26 +19,14 @@ namespace WorkTabel.ViewModels.Base
             return true;
         }
 
-        private DataTable _departmentsData;
+        private System.Collections.IEnumerable departments;
 
-        public DataTable DepartmentsData
-        {
-            get => _departmentsData;
-            set
-            {
-                _departmentsData = value;
-                OnPropertyChanged(nameof(DepartmentsData));
-            }
-        }
-
-        // Constructor
-        public DepartmentsViewModel()
-        {
-            // Fetch data from the database
-            DepartmentsData = new DatabaseService().GetDepartments();
-        }
-
+        public System.Collections.IEnumerable Departments { get => departments; set => Set(ref departments, value); }
 
 
     }
+    
+
+
+
 }
