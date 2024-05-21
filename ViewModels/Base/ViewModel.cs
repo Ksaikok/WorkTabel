@@ -23,6 +23,10 @@ namespace WorkTabel.ViewModels.Base
 
         public System.Collections.IEnumerable Departments { get => departments; set => Set(ref departments, value); }
 
+        private System.Collections.IEnumerable employee;
+
+        public System.Collections.IEnumerable Employee { get => employee; set => Set(ref employee, value); }
+
 
     }
     

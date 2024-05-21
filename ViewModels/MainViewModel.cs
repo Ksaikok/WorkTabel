@@ -5,18 +5,25 @@ using WorkTabel.ViewModels.Base;
 using WorkTabel.Model.ObIrtish;
 using static WorkTabel.Data.DataAccess;
 
-namespace WorkTabel.ViewModels
+namespace WorkTabel.ViewModels 
 {
     
-        public class MainViewModel
+        public class MainViewModel 
         {
             public ObservableCollection<Department> Departments { get; set; }
+            public ObservableCollection<Employee> Employees { get; set; }
 
             public MainViewModel()
             {
                 Departments = new ObservableCollection<Department>(new DepartmentDataAccess().GetDepartments());
+                Employees = new ObservableCollection<Employee>(new EmployeeDataAccess().GetEmployees());
+                //Employees = new EmployeeDataAccess().GetEmployees();
             }
+ 
         }
+ }   
+    
+    
     //internal class MainWindowViewModel : ViewModel
     //{
 
@@ -53,5 +60,5 @@ namespace WorkTabel.ViewModels
 
 
 
-}
+
 

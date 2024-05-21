@@ -50,10 +50,10 @@
                     </Grid.ColumnDefinitions>
 
                     <GroupBox Grid.Column="0" Header="Отделы">
-                        <ListBox d:ItemsSource="{d:SampleData ItemCount=25}" Background="White"  />
+                        <ListBox Background="White"  ItemsSource="{Binding Departments}" DisplayMemberPath="DepartmentName"/>
                     </GroupBox>
                     <GroupBox Grid.Column="1" Header="Табель">
-                        <DataGrid d:ItemsSource="{d:SampleData ItemCount=25}" GridLinesVisibility="Horizontal"/>
+                        <DataGrid GridLinesVisibility="Horizontal" ItemsSource="{Binding Employee}"/>
                     </GroupBox>
 
                 </Grid>
@@ -67,11 +67,11 @@
                     </Grid.ColumnDefinitions>
 
                     <GroupBox Grid.Column="0" Header="Отделы">
-                        <ListBox Background="White" ItemsSource="{Binding Departments}" >
+                        <ListBox Background="White" ItemsSource="{Binding Departments}" DisplayMemberPath="DepartmentName">
                         </ListBox>
                     </GroupBox>
                     <GroupBox Grid.Column="1" Header="Сотрудники" >
-                        <DataGrid ItemsSource="{Binding Departments}">
+                        <DataGrid  ItemsSource="{Binding Departments}">
                             
                         </DataGrid>
                     </GroupBox>

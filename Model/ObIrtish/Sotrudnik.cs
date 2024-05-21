@@ -8,34 +8,16 @@ using System.Runtime.CompilerServices;
 
 namespace WorkTabel.Model.ObIrtish
 {
-    internal class Employee : INotifyPropertyChanged
+    public class Employee : INotifyPropertyChanged
     {
-        private int _id;
-        private string _name;
         private DateTime _enterTime;
         private DateTime _leaveTime;
-        private readonly int _workedout;
         private string _attendanceType;
 
-
-        public int EmployeeID
-        {
-            get { return _id; }
-            set 
-            {
-                _id = value;
-                OnPropertyChanged("EmployeeID");
-            }
-        }
-        public string FullName
-        {
-            get { return _name; }
-            set
-            {
-                _name = value;
-                OnPropertyChanged("FullName");
-            }
-        }
+        public int EmployeeID { get; set; }
+        public string FullName { get; set; }
+        public int PositionID { get; set; }
+        public int DepartmentID { get; set; }
         public DateTime EnterTime
         {
             get { return _enterTime; }
@@ -56,7 +38,7 @@ namespace WorkTabel.Model.ObIrtish
         }
         public int WorkedOut { get; set; }
         public string AttendanceType
-        { 
+        {
             get { return _attendanceType; }
             set
             {
@@ -64,9 +46,6 @@ namespace WorkTabel.Model.ObIrtish
                 OnPropertyChanged("AttendanceType");
             }
         }
-
-
-
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
@@ -74,10 +53,12 @@ namespace WorkTabel.Model.ObIrtish
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
     }
-    public class Department
+    public class Department : INotifyPropertyChanged
     {
         public int DepartmentID { get; set; }
         public string DepartmentName { get; set; }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
         //public ICollection<Department> Departments { get; set; }
     }
 
