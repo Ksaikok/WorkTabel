@@ -9,6 +9,7 @@ using System.Configuration;
 
 namespace WorkTabel.Model.ObIrtish
 {
+    // класс сотрудника с его атрибутами
     public class Employee : INotifyPropertyChanged
     {
         public int EmployeeID { get; set; }
@@ -28,6 +29,7 @@ namespace WorkTabel.Model.ObIrtish
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
     }
+    //класс отдела с атрибутами
     public class Department : INotifyPropertyChanged
     {
         public int DepartmentID { get; set; }

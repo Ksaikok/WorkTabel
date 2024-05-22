@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 
 namespace WorkTabel.Data
 {
+    //слой допуска к данным. считываем данные из бд и записываем их в класс переменной в Model/ObIrtish/Sotrudnik.cs
     public class DataAccess
     {
         
