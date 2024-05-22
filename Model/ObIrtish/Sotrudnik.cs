@@ -5,49 +5,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using System.Configuration;
 
 namespace WorkTabel.Model.ObIrtish
 {
     public class Employee : INotifyPropertyChanged
     {
-        private DateTime _enterTime;
-        private DateTime _leaveTime;
-        private string _attendanceType;
-
         public int EmployeeID { get; set; }
         public string FullName { get; set; }
         public int PositionID { get; set; }
         public int DepartmentID { get; set; }
-        public DateTime EnterTime
-        {
-            get { return _enterTime; }
-            set
-            {
-                _enterTime = value;
-                OnPropertyChanged("EnterTime");
-            }
-        }
-        public DateTime ExitTime
-        {
-            get { return _leaveTime; }
-            set
-            {
-                _leaveTime = value;
-                OnPropertyChanged("ExitTime");
-            }
-        }
-        public int WorkedOut { get; set; }
-        public string AttendanceType
-        {
-            get { return _attendanceType; }
-            set
-            {
-                _attendanceType = value;
-                OnPropertyChanged("AttendanceType");
-            }
-        }
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        //код ниже будет представлен лругим классом
+        //public DateTime EnterTime { get; set; }
+        //public DateTime ExitTime { get; set; }
+        //public int WorkedOut { get; set; }
+        //public string AttendanceType { get; set; }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "Sotrudnik PropertyChanged")
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));

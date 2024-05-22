@@ -53,7 +53,7 @@
                         <ListBox Background="White"  ItemsSource="{Binding Departments}" DisplayMemberPath="DepartmentName"/>
                     </GroupBox>
                     <GroupBox Grid.Column="1" Header="Табель">
-                        <DataGrid GridLinesVisibility="Horizontal" ItemsSource="{Binding Employee}"/>
+                        <DataGrid   GridLinesVisibility="Horizontal" />
                     </GroupBox>
 
                 </Grid>
@@ -71,9 +71,9 @@
                         </ListBox>
                     </GroupBox>
                     <GroupBox Grid.Column="1" Header="Сотрудники" >
-                        <DataGrid  ItemsSource="{Binding Departments}">
-                            
-                        </DataGrid>
+                        <DataGrid  ItemsSource="{Binding Employees}" IsReadOnly="True"/>
+
+
                     </GroupBox>
 
                 </Grid>

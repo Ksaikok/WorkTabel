@@ -15,8 +15,8 @@ namespace WorkTabel.Data
         
         public class EmployeeDataAccess
         {
-            private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WorkTabelDB"].ConnectionString;
 
+            private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WorkTabelDB"].ConnectionString;
 
             public ObservableCollection<Employee> GetEmployees()
             {
@@ -26,7 +26,7 @@ namespace WorkTabel.Data
                 {
                     connection.Open();
 
-                    using (var command = new MySqlCommand("SELECT EmployeeID, FullName, PositionID, DepartmentID  FROM Employees", connection))
+                    using (var command = new MySqlCommand("SELECT *  FROM Employees", connection))
                     {
                         using (var reader = command.ExecuteReader())
                         {
@@ -36,7 +36,7 @@ namespace WorkTabel.Data
                                 {
                                     employees.Add(new Employee
                                     {
-                                        //EmployeeID = reader.GetInt32(0),
+                                        EmployeeID = reader.GetInt32(0),
                                         FullName = reader.GetString(1),
                                         PositionID = reader.GetInt32(2),
                                         DepartmentID = reader.GetInt32(3)
@@ -46,6 +46,7 @@ namespace WorkTabel.Data
                             }
                         }
                     }
+                    connection.Close();
                 }
 
                 return employees;
@@ -75,14 +76,18 @@ namespace WorkTabel.Data
                         {
                             while (reader.Read())
                             {
-                                departments.Add(new Department
+                                App.Current.Dispatcher.Invoke(() =>
                                 {
-                                    DepartmentID = reader.GetInt32(0),
-                                    DepartmentName = reader.GetString(1)
+                                    departments.Add(new Department
+                                    {
+                                        DepartmentID = reader.GetInt32(0),
+                                        DepartmentName = reader.GetString(1)
+                                    });
                                 });
                             }
                         }
                     }
+                    connection.Close();
                 }
 
                 return departments;
