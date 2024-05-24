@@ -69,11 +69,11 @@
                     </Grid.ColumnDefinitions>
 
                     <GroupBox Grid.Column="0" Header="Отделы" FontSize="14">
-                        <ListBox Background="White" ItemsSource="{Binding Departments}" DisplayMemberPath="DepartmentName">
+                        <ListBox Background="White" ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment}" DisplayMemberPath="DepartmentName">
                         </ListBox>
                     </GroupBox>
                     <GroupBox Grid.Column="1" Header="Сотрудники" FontSize="14" >
-                        <DataGrid  ItemsSource="{Binding Employees}" IsReadOnly="True" />
+                        <DataGrid  ItemsSource="{Binding FilteredEmployees}" IsReadOnly="True" />
 
 
                     </GroupBox>

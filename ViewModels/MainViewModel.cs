@@ -1,76 +1,84 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Collections.ObjectModel;
-using WorkTabel.ViewModels.Base;
 using WorkTabel.Model.ObIrtish;
 using static WorkTabel.Model.Data.DataAccess;
-using System.Windows.Input;
-using GalaSoft.MvvmLight.Command;
-using WorkTabel.Model.Data;
 using System.ComponentModel;
-using System.Windows.Data;
+using System.Runtime.CompilerServices;
+using WorkTabel.ViewModels.Base;
 
 namespace WorkTabel.ViewModels
 {
 
-    public class MainViewModel 
+    public class MainViewModel : ViewModel
         {
-            public ObservableCollection<Department> Departments { get; set; }
-            public ObservableCollection<Employee> Employees { get; set; }
-            public ObservableCollection<AttendanceType> AttendanceTypes { get; set; }
+
+        // PropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
 
-            public MainViewModel()
-            {
-                    Departments = new ObservableCollection<Department>(new DepartmentDataAccess().GetDepartments());
-                    Employees = new ObservableCollection<Employee>(new EmployeeDataAccess().GetEmployees());
-                    AttendanceTypes = new ObservableCollection<AttendanceType>(new AttendanceTypeDataAccess().GetAttendanceTypes());
-
-                    //Employees = new EmployeeDataAccess().GetEmployees();
-            }
-
-
-
+        public ObservableCollection<Department> Departments { get; set; }
+        public ObservableCollection<Employee> Employees { get; set; }
+        public ObservableCollection<AttendanceType> AttendanceTypes { get; set; }
+        //----------------------------------------------------------------
         private Department _selectedDepartment;
         public Department SelectedDepartment
-        {
+            {
             get => _selectedDepartment;
             set
             {
-                _selectedDepartment = value;
-                OnPropertyChanged(nameof(SelectedDepartment));
-                // Обновляем список сотрудников при изменении выбранного отдела
-                Employees.Refresh();
+                Set(ref _selectedDepartment, value); // Используем метод Set из ViewModelBase
+                FilterEmployeesByDepartment();
             }
         }
 
-        // Коллекция всех сотрудников (загружается из базы данных)
-        private ObservableCollection<Employee> _allEmployees;
-
-        // Отфильтрованная коллекция сотрудников для DataGrid
-        private ICollectionView _employees;
-        public ICollectionView Employees
+        // Отфильтрованная коллекция сотрудников
+        private ObservableCollection<Employee> _filteredEmployees;
+        public ObservableCollection<Employee> FilteredEmployees
         {
-            get
-            {
-                if (_employees == null && _allEmployees != null)
-                {
-                    _employees = CollectionViewSource.GetDefaultView(_allEmployees);
-                    _employees.Filter = EmployeeFilter; // Устанавливаем фильтр
-                }
-                return _employees;
-            }
+            get => _filteredEmployees;
+            set => Set(ref _filteredEmployees, value);
         }
 
-        // Метод фильтрации сотрудников по выбранному отделу
-        private bool EmployeeFilter(object item)
+
+
+        public MainViewModel()
+        {
+             // Загрузка данных
+             Departments = new ObservableCollection<Department>(new DepartmentDataAccess().GetDepartments());
+             Employees = new ObservableCollection<Employee>(new EmployeeDataAccess().GetEmployees());
+             AttendanceTypes = new ObservableCollection<AttendanceType>(new AttendanceTypeDataAccess().GetAttendanceTypes());
+
+            //Employees = new EmployeeDataAccess().GetEmployees();
+
+            // Инициализация FilteredEmployees
+            FilteredEmployees = new ObservableCollection<Employee>(Employees);
+
+
+        }
+        //-------------------------------------------------
+
+        // Метод фильтрации сотрудников
+        private void FilterEmployeesByDepartment()
         {
             if (SelectedDepartment == null)
-                return true; // Если отдел не выбран, показываем всех
-
-            var employee = item as Employee;
-            return employee.DepartmentID == SelectedDepartment.DepartmentID;
+            {
+                // Если отдел не выбран, показываем всех сотрудников
+                FilteredEmployees = new ObservableCollection<Employee>(Employees);
+            }
+            else
+            {
+                // Фильтруем сотрудников по выбранному отделу
+                FilteredEmployees = new ObservableCollection<Employee>(
+                    Employees.Where(e => e.DepartmentID == SelectedDepartment.DepartmentID)
+                );
+            }
         }
+
 
 
     }
@@ -79,8 +87,6 @@ namespace WorkTabel.ViewModels
     
     //internal class MainWindowViewModel : ViewModel
     //{
-
-
 
         //#region Команды
         //#region CloseApplicationCommand
@@ -91,18 +97,13 @@ namespace WorkTabel.ViewModels
         //    System.Windows.Application.Current.Shutdown();
         //}
         //#endregion
-
-
-
         //#endregion
-
         //public MainWindowViewModel()
         //{
         //    #region Команды
         //    CloseApplicationCommand = new LambdaCommand(OnCloseApplicationCommandExecuted, CanCloseApplicationCommandExecute);
 
         //    #endregion
-
 
         //}
     //}
