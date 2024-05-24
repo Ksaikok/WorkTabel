@@ -83,48 +83,30 @@
         </TabControl>
 
         <Grid Grid.Row="1" MinHeight="100">
-            <GroupBox Grid.Column="0" Header="Тип посещения" FontSize="14">
-                <Grid Background="White">
-                    <!--для динамичесого создания таблицы нужно исрользовать ItemControl-->
-                    <DataGrid 
-                        ItemsSource="{Binding AttendanceTypes}" 
-                        IsReadOnly="True" 
-                        AutoGenerateColumns="True" 
-                        ColumnWidth="40">
-                        <DataGrid.LayoutTransform>
-                            <TransformGroup>
-                                <RotateTransform Angle="90"/>
-                                <MatrixTransform Matrix="-1, 0, 0, 1, 0, 0"/>
-                            </TransformGroup>
-                        </DataGrid.LayoutTransform>
-                        <DataGrid.ColumnHeaderStyle>
-                            <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
-                                <Setter Property="LayoutTransform">
-                                    <Setter.Value>
-                                        <TransformGroup>
-                                            <RotateTransform Angle="-90"/>
-                                            <ScaleTransform ScaleX="-1" ScaleY="1"/>
-                                        </TransformGroup>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </DataGrid.ColumnHeaderStyle>
-                        <DataGrid.CellStyle>
-                            <Style TargetType="DataGridCell">
-                                <Setter Property="LayoutTransform">
-                                    <Setter.Value>
-                                        <TransformGroup>
-                                            <RotateTransform Angle="-90"/>
-                                            <ScaleTransform ScaleX="1" ScaleY="-1"/>
-                                        </TransformGroup>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </DataGrid.CellStyle>
-                    </DataGrid>
-                </Grid>
-            </GroupBox>
+    <GroupBox Grid.Column="0" Header="Тип посещения" FontSize="14">
+        <Grid Background="White">
+            <ItemsControl ItemsSource="{Binding AttendanceTypes}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Rows="1" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="LightGray" BorderThickness="0,0,1,1" Margin="-1,0,0,0">
+                            <TextBlock Text="{Binding Abbreviation}" FontSize="18" Margin="5" 
+                               TextAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock.ToolTip>
+                                    <ToolTip Content="{Binding Definition}" />
+                                </TextBlock.ToolTip>
+                            </TextBlock>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
+    </GroupBox>
+</Grid>
 
         <StatusBar VerticalAlignment="Center" Grid.Row="3">
             <StatusBarItem>
