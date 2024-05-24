@@ -49,11 +49,13 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <GroupBox Grid.Column="0" Header="Отделы">
+                    <GroupBox Grid.Column="0" Header="Отделы" FontSize="14">
                         <ListBox Background="White"  ItemsSource="{Binding Departments}" DisplayMemberPath="DepartmentName"/>
                     </GroupBox>
-                    <GroupBox Grid.Column="1" Header="Табель">
-                        <DataGrid   GridLinesVisibility="Horizontal" />
+                    <GroupBox Grid.Column="1" Header="Табель" FontSize="14">
+                        <DataGrid   GridLinesVisibility="Horizontal">
+                            
+                        </DataGrid>
                     </GroupBox>
 
                 </Grid>
@@ -66,12 +68,12 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <GroupBox Grid.Column="0" Header="Отделы">
+                    <GroupBox Grid.Column="0" Header="Отделы" FontSize="14">
                         <ListBox Background="White" ItemsSource="{Binding Departments}" DisplayMemberPath="DepartmentName">
                         </ListBox>
                     </GroupBox>
-                    <GroupBox Grid.Column="1" Header="Сотрудники" >
-                        <DataGrid  ItemsSource="{Binding Employees}" IsReadOnly="True"/>
+                    <GroupBox Grid.Column="1" Header="Сотрудники" FontSize="14" >
+                        <DataGrid  ItemsSource="{Binding Employees}" IsReadOnly="True" />
 
 
                     </GroupBox>
@@ -81,10 +83,45 @@
         </TabControl>
 
         <Grid Grid.Row="1" MinHeight="100">
-            <GroupBox Grid.Column="0" Header="Тип посещения">
+            <GroupBox Grid.Column="0" Header="Тип посещения" FontSize="14">
                 <Grid Background="White">
                     <!--для динамичесого создания таблицы нужно исрользовать ItemControl-->
-                    
+                    <DataGrid 
+                        ItemsSource="{Binding AttendanceTypes}" 
+                        IsReadOnly="True" 
+                        AutoGenerateColumns="True" 
+                        ColumnWidth="40">
+                        <DataGrid.LayoutTransform>
+                            <TransformGroup>
+                                <RotateTransform Angle="90"/>
+                                <MatrixTransform Matrix="-1, 0, 0, 1, 0, 0"/>
+                            </TransformGroup>
+                        </DataGrid.LayoutTransform>
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                                <Setter Property="LayoutTransform">
+                                    <Setter.Value>
+                                        <TransformGroup>
+                                            <RotateTransform Angle="-90"/>
+                                            <ScaleTransform ScaleX="-1" ScaleY="1"/>
+                                        </TransformGroup>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="LayoutTransform">
+                                    <Setter.Value>
+                                        <TransformGroup>
+                                            <RotateTransform Angle="-90"/>
+                                            <ScaleTransform ScaleX="1" ScaleY="-1"/>
+                                        </TransformGroup>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DataGrid.CellStyle>
+                    </DataGrid>
                 </Grid>
             </GroupBox>
         </Grid>
@@ -98,10 +135,10 @@
             </StatusBarItem>
         </StatusBar>
         <Button 
-            Content="Button" Margin="0,70,20,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="25"
+            Content="Экспорт" Margin="0,70,20,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="25"
             />
         <Button 
-            Content="Button" Margin="0,70,100,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="25"
+            Content="Р. день" Margin="0,70,100,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="25"
             />
 
         <DatePicker 
