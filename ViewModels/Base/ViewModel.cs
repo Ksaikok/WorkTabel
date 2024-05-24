@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Configuration;
-using System.Data;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+using WorkTabel.Model.ObIrtish;
 
 namespace WorkTabel.ViewModels.Base
 {
-    internal abstract class ViewModel : INotifyPropertyChanged
+    public abstract class ViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected  virtual void OnPropertyChanged([CallerMemberName] string PropertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string PropertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(PropertyName));
         }
@@ -25,27 +20,49 @@ namespace WorkTabel.ViewModels.Base
             OnPropertyChanged(PropertyName);
             return true;
         }
-
-        private DataTable _departmentsData;
-
-        public DataTable DepartmentsData
+        //-------------------------------------------------
+        private ObservableCollection<Department> _departments;
+        public ObservableCollection<Department> Departments
         {
-            get => _departmentsData;
-            set
-            {
-                _departmentsData = value;
-                OnPropertyChanged(nameof(DepartmentsData));
-            }
+            get => _departments;
+            set => Set(ref _departments, value);
         }
 
-        // Constructor
-        public DepartmentsViewModel()
+        private ObservableCollection<Employee> _employees;
+        public ObservableCollection<Employee> Employees
         {
-            // Fetch data from the database
-            DepartmentsData = new DatabaseService().GetDepartments();
+            get => _employees;
+            set => Set(ref _employees, value);
+        }
+
+        private ObservableCollection<AttendanceType> _attendanceTypes;
+        public ObservableCollection<AttendanceType> AttendanceTypes
+        {
+            get => _attendanceTypes;
+            set => Set(ref _attendanceTypes, value);
         }
 
 
+        //-------------------------------------------------
+        ////-------------------------------------------------
+        //private System.Collections.IEnumerable departments;
+
+        //public System.Collections.IEnumerable Departments { get => departments; set => Set(ref departments, value); }
+
+        ////-------------------------------------------------
+        //private System.Collections.IEnumerable employees;
+
+        //public System.Collections.IEnumerable Employees { get => employees; set => Set(ref employees, value); }
+
+        ////-------------------------------------------------
+        //private System.Collections.IEnumerable attendanceTypes;
+
+        //public System.Collections.IEnumerable AttendanceTypes { get => attendanceTypes; set => Set(ref attendanceTypes, value); }
+        ////-------------------------------------------------
 
     }
+
+
+
+
 }
