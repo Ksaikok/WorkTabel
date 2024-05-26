@@ -3,8 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:fa="http://schemas.fontawesome.com/icons/"
-        xmlns:cmd="clr-namespace:WorkTabel.Infrastructure.Commands" xmlns:obirtish="clr-namespace:WorkTabel.Model.ObIrtish" xmlns:base="clr-namespace:WorkTabel.ViewModels.Base" d:DataContext="{d:DesignInstance Type=base:ViewModel}"
+        xmlns:base="clr-namespace:WorkTabel.ViewModels.Base" d:DataContext="{d:DesignInstance Type=base:ViewModel}"
         xmlns:local="clr-namespace:WorkTabel.ViewModels"
         mc:Ignorable="d"
         Title="Главная страница" Height="900" Width="1600" Background="#FF6181D0">
@@ -12,25 +11,23 @@
         <local:MainViewModel/>
     </Window.DataContext>
 
-
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="730*"/>
-            <RowDefinition Height="140*"/>
+            <RowDefinition Height="361*"/>
+            <RowDefinition Height="71*"/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
         <Menu VerticalAlignment="Top" FontSize="14" Height="40" Background="#00000000">
 
             <MenuItem Header="Файл" ClipToBounds="True" Height="40">
-                <MenuItem Header="Открыть"/>
-                <MenuItem Header="Экспорт"/>
-                <MenuItem Header="Выход" Command="{Binding CloseApplicationCommand}"/>
+                <MenuItem Header="Сохранить"/>
+                
+                <MenuItem Header="Выход"/>
             </MenuItem>
 
-            <MenuItem Header="База данных" Height="40">
-                <MenuItem Header="Проверить подключение"/>
-                <MenuItem Header="Прервать подкоючение"/>
-                <MenuItem Header="Подключиться"/>
+            <MenuItem Header="Экспорт" Height="40">
+                <MenuItem Header="Ecxel Форма T-12"/>
+                <MenuItem Header="Word Форма T-12"/>
             </MenuItem>
 
             <MenuItem Header="Помощь" Height="40">
@@ -39,104 +36,101 @@
 
         </Menu>
 
-
-
         <TabControl Margin="0,40,0,0" HorizontalContentAlignment="Left">
             <TabItem Header="Табель" Padding="0,0,0,0" Height="25">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="300"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <GroupBox Grid.Column="0" Header="Отделы" FontSize="14">
-                        <ListBox Background="White"  ItemsSource="{Binding Departments}" DisplayMemberPath="DepartmentName"/>
-                    </GroupBox>
-                    <GroupBox Grid.Column="1" Header="Табель" FontSize="14">
-                        <DataGrid   GridLinesVisibility="Horizontal">
-                            
+                    <GroupBox FontSize="16" Margin="0,0,0,0" >
+                        <GroupBox.Header>
+                            <DockPanel LastChildFill="False">
+                                <TextBlock Text="Табель" VerticalAlignment="Center" Margin="5,0,5,0" DockPanel.Dock="Left" Foreground="White"/>
+                                <ComboBox ItemsSource="{Binding Departments}" DisplayMemberPath="DepartmentName" Margin="0,0,0,0" Width="232" BorderBrush="#7F000000" Foreground="#FF444444" Background="White" Height="21" FontSize="11"/>
+                                <DatePicker Margin="10,0,0,0" Width="130" BorderBrush="#E5000000" Height="21" FontWeight="Bold" Foreground="#FF1D1D1D" FontSize="12" Language="ru"  >
+                                    <DatePicker.Background>
+                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                            <GradientStop Color="#FF3F51B5" Offset="0.004"/>
+                                            <GradientStop Color="#FF898BE8" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </DatePicker.Background>
+                                </DatePicker>
+                            </DockPanel>
+                        </GroupBox.Header>
+                        <DataGrid Background="White" AutoGenerateColumns="False" HeadersVisibility="None" IsReadOnly="True">
+
                         </DataGrid>
                     </GroupBox>
-
                 </Grid>
             </TabItem>
 
             <TabItem Header="Сотрудники" HorizontalAlignment="Left" Padding="0,0,0,0" Height="25">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="310"/>
+                        <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-
-                    <GroupBox Grid.Column="0" Header="Отделы" FontSize="14">
-                        <ListBox Background="White" ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment}" DisplayMemberPath="DepartmentName">
+                    <GroupBox Grid.Column="0" Header="Отделы" FontSize="16">
+                        <ListBox Background="White" ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment}" DisplayMemberPath="DepartmentName" FontSize="14">
                         </ListBox>
                     </GroupBox>
-                    <GroupBox Grid.Column="1" Header="Сотрудники" FontSize="14" >
-                        <DataGrid  ItemsSource="{Binding FilteredEmployees}" IsReadOnly="True" />
-
-
+                    <GroupBox Grid.Column="1" FontSize="16">
+                        <GroupBox.Header>
+                            <DockPanel LastChildFill="False">
+                                <TextBlock Text="Сотрудники" VerticalAlignment="Center" Margin="5,0,5,0" DockPanel.Dock="Left" Foreground="White"/>
+                                <Button Content="Показать всех" Command="{Binding ShowAllEmployeesCommand}" Padding="5,0" DockPanel.Dock="Right" Height="16" Width="102" FontSize="13" FontWeight="Normal" />
+                            </DockPanel>
+                        </GroupBox.Header>
+                        <DataGrid Background="White" ItemsSource="{Binding FilteredEmployees}" SelectedItem="{Binding SelectedEmployee}" AutoGenerateColumns="False" HeadersVisibility="None" IsReadOnly="True" FontSize="14">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding FullName}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
                     </GroupBox>
+                    <GroupBox Grid.Column="2" Header="Информация" FontSize="16" >
+                        <DataGrid Background="White" ItemsSource="{Binding EmployeeDetails}" AutoGenerateColumns="True">
 
+                        </DataGrid>
+                    </GroupBox>
                 </Grid>
             </TabItem>
         </TabControl>
 
         <Grid Grid.Row="1" MinHeight="100">
-    <GroupBox Grid.Column="0" Header="Тип посещения" FontSize="14">
-        <Grid Background="White">
-            <ItemsControl ItemsSource="{Binding AttendanceTypes}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Rows="1" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderBrush="LightGray" BorderThickness="0,0,1,1" Margin="-1,0,0,0">
-                            <TextBlock Text="{Binding Abbreviation}" FontSize="18" Margin="5" 
-                               TextAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock.ToolTip>
-                                    <ToolTip Content="{Binding Definition}" />
-                                </TextBlock.ToolTip>
-                            </TextBlock>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            <GroupBox Grid.Column="0" Header="Тип посещения" FontSize="14" >
+                <Grid Background="White">
+                    <ItemsControl ItemsSource="{Binding AttendanceTypes}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="1" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="LightGray" BorderThickness="0,0,1,1" Margin="-1,0,0,0">
+                                    <TextBlock Text="{Binding Abbreviation}" FontSize="18" Margin="5" 
+                                       TextAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock.ToolTip>
+                                            <ToolTip Content="{Binding Definition}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Grid>
+            </GroupBox>
         </Grid>
-    </GroupBox>
-</Grid>
-
-        <StatusBar VerticalAlignment="Center" Grid.Row="3">
+        <StatusBar VerticalAlignment="Center" Grid.Row="2" Height="20">
             <StatusBarItem>
                 <TextBlock Text="Привет"/>
             </StatusBarItem>
             <StatusBarItem>
-                <ProgressBar Width="120" Height="14" Value="30"/>
+                <ProgressBar Width="98" Height="14" Value="30"/>
             </StatusBarItem>
         </StatusBar>
-        <Button 
-            Content="Экспорт" Margin="0,70,20,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="25"
-            />
-        <Button 
-            Content="Р. день" Margin="0,70,100,0" VerticalAlignment="Top" HorizontalAlignment="Right" Height="25"
-            />
-
-        <DatePicker 
-            Margin="0,65,180,0" VerticalAlignment="Top" HorizontalAlignment="Right" 
-            Width="130" BorderBrush="#E5000000" Height="35" FontWeight="Bold" 
-            Foreground="#FF1D1D1D" FontSize="14" Language="ru"  >
-            <DatePicker.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FF3F51B5" Offset="0.004"/>
-                    <GradientStop Color="#FF898BE8" Offset="1"/>
-                </LinearGradientBrush>
-            </DatePicker.Background>
-        </DatePicker>
-
-
-
 
     </Grid>
 </Window>

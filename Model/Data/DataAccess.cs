@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Configuration;
 using WorkTabel.Model.ObIrtish;
-using MySql.Data;
 using MySqlConnector;
 using System.Collections.ObjectModel;
 
 namespace WorkTabel.Model.Data
 {
     //слой допуска к данным. считываем данные из бд и записываем их в класс переменной в Model/ObIrtish/Sotrudnik.cs
+    // подключение к БД прописано в app.config
     public class DataAccess
     {
-
+        //загрузка инфы о сотрудниках
         public class EmployeeDataAccess
         {
 
@@ -39,9 +35,10 @@ namespace WorkTabel.Model.Data
                                     {
                                         EmployeeID = reader.GetInt32(0),
                                         FullName = reader.GetString(1),
-                                        PositionID = reader.GetInt32(2),
-                                        DepartmentID = reader.GetInt32(3)
-                                    });
+                                        TabelNum = reader.GetInt32(2),
+                                        PositionID = reader.GetInt32(3),
+                                        DepartmentID = reader.GetInt32(4)
+                                });
                                 });
 
                             }
@@ -54,12 +51,10 @@ namespace WorkTabel.Model.Data
             }
         }
 
+        // загрузка инфы о отделах
         public class DepartmentDataAccess
         {
-            //private readonly string _connectionString;
-
-            //public DepartmentDataAccess()
-            //{}
+           
             private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WorkTabelDB"].ConnectionString;
 
 
@@ -95,6 +90,7 @@ namespace WorkTabel.Model.Data
             }
         }
 
+        // инфа о типах посещения (в табелях тип посещения проставляется определённой буквой, каждая имеет свою расшифровку)
         public class AttendanceTypeDataAccess
         {
 
@@ -131,6 +127,52 @@ namespace WorkTabel.Model.Data
                 }
 
                 return attendanceTypes;
+            }
+        }
+
+        // инфа о посещении (кто когда и сколько отработал)
+        public class AttendanceDataAccess
+        {
+
+            private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WorkTabelDB"].ConnectionString;
+
+            public ObservableCollection<Attendance> GetAttendances()
+            {
+                var attendances = new ObservableCollection<Attendance>();
+
+                using (var connection = new MySqlConnection(_connectionString))
+                {
+                    connection.Open();
+
+                    using (var command = new MySqlCommand("SELECT *  FROM Attendance", connection))
+                    {
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                {
+                                    attendances.Add(new Attendance
+                                    {
+                                        AttendanceID = reader.GetInt32(0),
+                                        AttendanceDate = reader.GetDateTime(1),
+                                        TimeIn = reader.GetDateTime(2),
+                                        TimeOut = reader.GetDateTime(3),
+                                        EmployeeID = new Employee
+                                        {
+                                            EmployeeID = reader.GetInt32(4),
+                                        }
+                                        
+                                    });
+                                });
+
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+
+                return attendances;
             }
         }
     }
