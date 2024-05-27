@@ -2,6 +2,7 @@
 using WorkTabel.Model.ObIrtish;
 using MySqlConnector;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace WorkTabel.Model.Data
 {
@@ -18,35 +19,42 @@ namespace WorkTabel.Model.Data
             public ObservableCollection<Employee> GetEmployees()
             {
                 var employees = new ObservableCollection<Employee>();
-
-                using (var connection = new MySqlConnection(_connectionString))
+                try
                 {
-                    connection.Open();
 
-                    using (var command = new MySqlCommand("SELECT *  FROM Employees", connection))
+                    using (var connection = new MySqlConnection(_connectionString))
                     {
-                        using (var reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    employees.Add(new Employee
-                                    {
-                                        EmployeeID = reader.GetInt32(0),
-                                        FullName = reader.GetString(1),
-                                        TabelNum = reader.GetInt32(2),
-                                        PositionID = reader.GetInt32(3),
-                                        DepartmentID = reader.GetInt32(4)
-                                });
-                                });
+                        connection.Open();
 
+                        using (var command = new MySqlCommand("SELECT *  FROM Employees", connection))
+                        {
+                            using (var reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        employees.Add(new Employee
+                                        {
+                                            EmployeeID = reader.GetInt32(0),
+                                            FullName = reader.GetString(1),
+                                            TabelNum = reader.GetInt32(2),
+                                            PositionID = reader.GetInt32(3),
+                                            DepartmentID = reader.GetInt32(4)
+                                        });
+                                    });
+
+                                }
                             }
                         }
+                        connection.Close();
                     }
-                    connection.Close();
                 }
-
+                catch (MySqlException ex)
+                {
+                    // Обработка исключения
+                    MessageBox.Show("Не удалось подключиться к базе данных. Не удалось подключиться к таблице Employee. " + ex.Message);
+                }
                 return employees;
             }
         }
@@ -61,31 +69,38 @@ namespace WorkTabel.Model.Data
             public List<Department> GetDepartments()
             {
                 var departments = new List<Department>();
-
-                using (var connection = new MySqlConnection(_connectionString))
+                try
                 {
-                    connection.Open();
 
-                    using (var command = new MySqlCommand("SELECT DepartmentID, Name FROM Departments", connection))
+                    using (var connection = new MySqlConnection(_connectionString))
                     {
-                        using (var reader = command.ExecuteReader())
+                        connection.Open();
+
+                        using (var command = new MySqlCommand("SELECT DepartmentID, Name FROM Departments", connection))
                         {
-                            while (reader.Read())
+                            using (var reader = command.ExecuteReader())
                             {
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                while (reader.Read())
                                 {
-                                    departments.Add(new Department
+                                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
                                     {
-                                        DepartmentID = reader.GetInt32(0),
-                                        DepartmentName = reader.GetString(1)
+                                        departments.Add(new Department
+                                        {
+                                            DepartmentID = reader.GetInt32(0),
+                                            DepartmentName = reader.GetString(1)
+                                        });
                                     });
-                                });
+                                }
                             }
                         }
+                        connection.Close();
                     }
-                    connection.Close();
                 }
-
+                catch (MySqlException ex)
+                {
+                    // Обработка исключения
+                    MessageBox.Show("Не удалось подключиться к базе данных. Не удалось подключиться к таблице Department. " + ex.Message);
+                }
                 return departments;
             }
         }
@@ -99,31 +114,39 @@ namespace WorkTabel.Model.Data
             public ObservableCollection<AttendanceType> GetAttendanceTypes()
             {
                 var attendanceTypes = new ObservableCollection<AttendanceType>();
-
-                using (var connection = new MySqlConnection(_connectionString))
+                try
                 {
-                    connection.Open();
 
-                    using (var command = new MySqlCommand("SELECT *  FROM AttendanceType", connection))
+                    using (var connection = new MySqlConnection(_connectionString))
                     {
-                        using (var reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    attendanceTypes.Add(new AttendanceType
-                                    {
-                                        AttendanceTypeID = reader.GetInt32(0),
-                                        Abbreviation = reader.GetString(1),
-                                        Definition = reader.GetString(2),
-                                    });
-                                });
+                        connection.Open();
 
+                        using (var command = new MySqlCommand("SELECT *  FROM AttendanceType", connection))
+                        {
+                            using (var reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        attendanceTypes.Add(new AttendanceType
+                                        {
+                                            AttendanceTypeID = reader.GetInt32(0),
+                                            Abbreviation = reader.GetString(1),
+                                            Definition = reader.GetString(2),
+                                        });
+                                    });
+
+                                }
                             }
                         }
+                        connection.Close();
                     }
-                    connection.Close();
+                }
+                catch (MySqlException ex)
+                {
+                    // Обработка исключения
+                    MessageBox.Show("Не удалось подключиться к базе данных. Не удалось подключиться к таблице AttendanceType. " + ex.Message);
                 }
 
                 return attendanceTypes;
@@ -139,37 +162,45 @@ namespace WorkTabel.Model.Data
             public ObservableCollection<Attendance> GetAttendances()
             {
                 var attendances = new ObservableCollection<Attendance>();
-
-                using (var connection = new MySqlConnection(_connectionString))
+                try
                 {
-                    connection.Open();
 
-                    using (var command = new MySqlCommand("SELECT *  FROM Attendance", connection))
+                    using (var connection = new MySqlConnection(_connectionString))
                     {
-                        using (var reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                                {
-                                    attendances.Add(new Attendance
-                                    {
-                                        AttendanceID = reader.GetInt32(0),
-                                        AttendanceDate = reader.GetDateTime(1),
-                                        TimeIn = reader.GetDateTime(2),
-                                        TimeOut = reader.GetDateTime(3),
-                                        EmployeeID = new Employee
-                                        {
-                                            EmployeeID = reader.GetInt32(4),
-                                        }
-                                        
-                                    });
-                                });
+                        connection.Open();
 
+                        using (var command = new MySqlCommand("SELECT *  FROM Attendance", connection))
+                        {
+                            using (var reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        attendances.Add(new Attendance
+                                        {
+                                            AttendanceID = reader.GetInt32(0),
+                                            AttendanceDate = reader.GetDateTime(1),
+                                            TimeIn = reader.GetDateTime(2),
+                                            TimeOut = reader.GetDateTime(3),
+                                            EmployeeID = new Employee
+                                            {
+                                                EmployeeID = reader.GetInt32(4),
+                                            }
+
+                                        });
+                                    });
+
+                                }
                             }
                         }
+                        connection.Close();
                     }
-                    connection.Close();
+                }
+                catch(MySqlException ex) 
+                {
+                    // Обработка исключения
+                    MessageBox.Show("Не удалось подключиться к базе данных. Не удалось подключиться к таблице Attendance. " + ex.Message);
                 }
 
                 return attendances;
