@@ -76,16 +76,29 @@ namespace WorkTabel.ViewModels.Base
         }
 
         // Приватное поле для хранения отфильтрованной коллекции сотрудников
-        private ObservableCollection<Employee> _filteredEmployees;
+        private ObservableCollection<Employee> _FilteredEmployeesByDepartment;
 
         // Публичное свойство для доступа к отфильтрованной коллекции сотрудников
-        public ObservableCollection<Employee> FilteredEmployees
+        public ObservableCollection<Employee> FilteredEmployeesByDepartment
         {
             // Получаем значение коллекции
-            get => _filteredEmployees;
+            get => _FilteredEmployeesByDepartment;
 
             // Устанавливаем значение коллекции, используя метод Set для уведомления о изменении
-            set => Set(ref _filteredEmployees, value);
+            set => Set(ref _FilteredEmployeesByDepartment, value);
         }
+        // Приватное поле для хранения отфильтрованной коллекции сотрудников
+        private ObservableCollection<Employee> _filteredEmployeesAttendancesByDate;
+
+        // Публичное свойство для доступа к отфильтрованной коллекции сотрудников
+        public ObservableCollection<Employee> FilteredEmployeesAttendancesByDate
+        {
+            // Получаем значение коллекции
+            get => _filteredEmployeesAttendancesByDate;
+
+            // Устанавливаем значение коллекции, используя метод Set для уведомления о изменении
+            set => Set(ref _filteredEmployeesAttendancesByDate, value);
+        }
+
     }
 }

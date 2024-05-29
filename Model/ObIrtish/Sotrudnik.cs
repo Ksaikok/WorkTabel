@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace WorkTabel.Model.ObIrtish
@@ -32,6 +33,10 @@ namespace WorkTabel.Model.ObIrtish
         public int TabelNum { get; set; }
         public int PositionID { get; set; }
         public int DepartmentID { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
+        public DateTime Birthday { get; set; }
+        public Collection<Attendance> Attendances { get; set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -43,8 +48,9 @@ namespace WorkTabel.Model.ObIrtish
 
     }
 
+
     // посещения сотрудником работы с расчетом отработанных часов
-    public class Attendance
+    public class Attendance : INotifyPropertyChanged
     {
         public int AttendanceID { get; set; }
         public DateTime AttendanceDate { get; set; }        
@@ -62,7 +68,41 @@ namespace WorkTabel.Model.ObIrtish
                     return null;
             }
         }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
 
+    //27
+    public class AuthorizationModel : INotifyPropertyChanged
+    {
+        private string _userName;
+        public string UserName
+        {
+            get => _userName;
+            set => Set(ref _userName, value);
+        }
+
+        private string _password;
+        public string Password
+        {
+            get => _password;
+            set => Set(ref _password, value);
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected virtual bool Set<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+    }
 
 }

@@ -10,6 +10,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data.Linq;
 using LinqToDB;
+using WorkTabel.Model.ObIrtish;
 
 
 namespace WorkTabel.View.Windows
@@ -19,6 +20,21 @@ namespace WorkTabel.View.Windows
     /// </summary>
     public partial class MainWindow : Window
     {
-        
+        //private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    System.Windows.Controls.DataGrid myDataGrid = (System.Windows.Controls.DataGrid)sender;
+        //    Employee productItem = (Employee)myDataGrid.SelectedItem; //Datagrid bound with ProductItem 
+
+        //    MessageBoxResult messageBoxResult = MessageBox.Show(productItem.FullName);
+        //}
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

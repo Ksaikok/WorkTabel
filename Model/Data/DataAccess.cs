@@ -40,7 +40,10 @@ namespace WorkTabel.Model.Data
                                             FullName = reader.GetString(1),
                                             TabelNum = reader.GetInt32(2),
                                             PositionID = reader.GetInt32(3),
-                                            DepartmentID = reader.GetInt32(4)
+                                            DepartmentID = reader.GetInt32(4),
+                                            PhoneNumber = reader.GetString(5),
+                                            Email = reader.GetString(6),
+                                            Birthday = reader.GetDateTime(7),
                                         });
                                     });
 
@@ -201,6 +204,11 @@ namespace WorkTabel.Model.Data
                 {
                     // Обработка исключения
                     MessageBox.Show("Не удалось подключиться к базе данных. Не удалось подключиться к таблице Attendance. " + ex.Message);
+
+                }
+                catch(Exception ex) 
+                {
+                    Console.WriteLine($"Непредвиденная ошибка: {ex.Message}");
                 }
 
                 return attendances;
