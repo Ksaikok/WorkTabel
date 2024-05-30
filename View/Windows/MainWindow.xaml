@@ -64,7 +64,7 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="310"/>
-                        <ColumnDefinition MinWidth="300" Width="400"/>
+                        <ColumnDefinition Width="500"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <GroupBox Grid.Column="0" Header="Отделы" FontSize="16">
@@ -86,12 +86,43 @@
                         </DataGrid>
                     </GroupBox>
                     <GroupBox Grid.Column="2" Header="Информация" FontSize="16">
-                        <DataGrid ItemsSource="{Binding FilteredEmployee}"  Background="White" AutoGenerateColumns="True" IsReadOnly="True"/>
+                        <DataGrid ItemsSource="{Binding FilteredEmployee}" SelectionMode="Single" AutoGenerateColumns="True" RowHeight="1500" Width="608">
+                            <DataGrid.LayoutTransform>
+                                <TransformGroup>
+                                    <RotateTransform Angle="90"/>
+                                    <MatrixTransform Matrix="-1, 0, 0, 1, 0, 0"/>                                    
+                                </TransformGroup>
+                            </DataGrid.LayoutTransform>
+                            <DataGrid.ColumnHeaderStyle>
+                                <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                                    <Setter Property="LayoutTransform">
+                                        <Setter.Value>
+                                            <TransformGroup>
+                                                <RotateTransform Angle="-90"/>
+                                                <ScaleTransform ScaleX="1" ScaleY="-1"/>
+                                            </TransformGroup>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </DataGrid.ColumnHeaderStyle>
+                            <DataGrid.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="LayoutTransform">
+                                        <Setter.Value>
+                                            <TransformGroup>
+                                                <RotateTransform Angle="-90"/>
+                                                <ScaleTransform ScaleX="1" ScaleY="-1"/>
+                                            </TransformGroup>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </DataGrid.CellStyle>
+                        </DataGrid>
                     </GroupBox>
                 </Grid>
             </TabItem>
         </TabControl>
-
+        <!--Тип посещения снизу-->
         <Grid Grid.Row="1" MinHeight="100">
             <GroupBox Grid.Column="0" Header="Тип посещения" FontSize="14" >
                 <Grid Background="White">
