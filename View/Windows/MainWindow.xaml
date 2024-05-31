@@ -22,6 +22,7 @@
             <MenuItem Header="Файл" ClipToBounds="True" Height="40">
                 <MenuItem Header="Сохранить"/>
                 <MenuItem Header="Переподключиться" Command="{Binding ReconnectCommand}"/>
+                <MenuItem Header="Симуляция турникета" Command="{Binding GenerateTurnikSim}"/>
                 <MenuItem Header="Выход"/>
             </MenuItem>
 

@@ -10,6 +10,7 @@ namespace WorkTabel.Model.ObIrtish
         public int AttendanceTypeID { get; set; }
         public string Abbreviation { get; set; }
         public string Definition { get; set; }
+        public Collection<Attendance> Attendances { get; set; }
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 
