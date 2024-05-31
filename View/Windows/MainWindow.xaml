@@ -48,13 +48,19 @@
                             <DockPanel LastChildFill="False">
                                 <TextBlock Text="Табель" VerticalAlignment="Center" Margin="5,0,5,0" DockPanel.Dock="Left" Foreground="White"/>
                                 <ComboBox ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment}" DisplayMemberPath="DepartmentName" Margin="0,0,0,0" Width="232" BorderBrush="#7F000000" Foreground="#FF444444" Background="White" Height="21" FontSize="11"/>
-                                <ComboBox ItemsSource="{Binding Years}" SelectedItem="{Binding SelectedMonth, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="30,0,0,0" BorderBrush="#7F000000" Foreground="#FF444444" Background="White" Height="21" FontSize="11"/>
-                                <ComboBox ItemsSource="{Binding Months}"  SelectedItem="{Binding SelectedYear, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="20,0,0,0" BorderBrush="#7F000000" Foreground="#FF444444" Background="White" Height="21" FontSize="11"/>
+                                <ComboBox ItemsSource="{Binding Years}" SelectedItem="{Binding SelectedYear, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="30,0,0,0" BorderBrush="#7F000000" Foreground="#FF444444" Background="White" Height="21" FontSize="11"/>
+                                <ComboBox ItemsSource="{Binding Months}"  SelectedItem="{Binding SelectedMonth, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="20,0,0,0" BorderBrush="#7F000000" Foreground="#FF444444" Background="White" Height="21" FontSize="11"/>
 
                             </DockPanel>
                         </GroupBox.Header>
-                        <DataGrid Background="White" AutoGenerateColumns="False" HeadersVisibility="None" IsReadOnly="True">
-
+                        <DataGrid x:Name="TimeSheetDataGrid" AutoGenerateColumns="False" CanUserAddRows="False"
+                        ItemsSource="{Binding Attendance}" AutoGeneratingColumn="TimeSheetDataGrid_AutoGeneratingColumn">
+                            <DataGrid.Columns>                                
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                                <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="200"/>
+                                <!--<local:DynamicDayColumnGenerator x:Key="DynamicDayColumnGenerator" Year="{Binding SelectedYear}" Month="{Binding SelectedMonth}" />-->
+                            </DataGrid.Columns>
+                            
                         </DataGrid>
                     </GroupBox>
                 </Grid>
@@ -86,7 +92,22 @@
                         </DataGrid>
                     </GroupBox>
                     <GroupBox Grid.Column="2" Header="Информация" FontSize="16">
-                        <DataGrid ItemsSource="{Binding FilteredEmployee}" SelectionMode="Single" AutoGenerateColumns="True" RowHeight="1500" Width="608">
+                        <DataGrid ItemsSource="{Binding FilteredEmployee}" SelectedItem="" SelectionMode="Single" AutoGenerateColumns="False" RowHeight="1500">
+
+                            <DataGrid.Resources>
+                                <Style x:Key="NoHighlightTextColumnStyle" TargetType="{x:Type DataGridCell}">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="Transparent" />
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="Transparent" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.Resources>
+
                             <DataGrid.LayoutTransform>
                                 <TransformGroup>
                                     <RotateTransform Angle="90"/>
@@ -117,6 +138,17 @@
                                     </Setter>
                                 </Style>
                             </DataGrid.CellStyle>
+
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}"/>
+                                <DataGridTextColumn Header="Табельный номер" Binding="{Binding TabelNum}"/>
+                                <DataGridTextColumn Header="Должность" Binding="{Binding PositionID}"/>
+                                <DataGridTextColumn Header="Отдел" Binding="{Binding DepartmentID}"/>
+                                <DataGridTextColumn Header="Номер телефона" Binding="{Binding PhoneNumber}"/>
+                                <DataGridTextColumn Header="Электронная почта" Binding="{Binding Email}"/>
+                                <DataGridTextColumn Header="День рождения" Binding="{Binding Birthday}"/>
+                            </DataGrid.Columns>
+                            
                         </DataGrid>
                     </GroupBox>
                 </Grid>

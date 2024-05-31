@@ -189,6 +189,10 @@ namespace WorkTabel.Model.Data
                                             EmployeeID = new Employee
                                             {
                                                 EmployeeID = reader.GetInt32(4),
+                                            },
+                                            AttendanceTypeID = new AttendanceType
+                                            {
+                                                AttendanceTypeID = reader.GetInt32(4),
                                             }
 
                                         });

@@ -7,9 +7,9 @@ namespace WorkTabel.Model.ObIrtish
     //прописаны основные классы и их свойства
     public class AttendanceType : INotifyPropertyChanged
     {
-        public int AttendanceTypeID {get; set;}
-        public string Abbreviation { get; set;}
-        public string Definition { get; set;}
+        public int AttendanceTypeID { get; set; }
+        public string Abbreviation { get; set; }
+        public string Definition { get; set; }
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 
@@ -26,7 +26,7 @@ namespace WorkTabel.Model.ObIrtish
         }
     }
     // класс сотрудника с его атрибутами
-    public class Employee : INotifyPropertyChanged 
+    public class Employee : INotifyPropertyChanged
     {
         public int EmployeeID { get; set; }
         public string? FullName { get; set; }
@@ -53,7 +53,7 @@ namespace WorkTabel.Model.ObIrtish
     public class Attendance : INotifyPropertyChanged
     {
         public int AttendanceID { get; set; }
-        public DateTime AttendanceDate { get; set; }        
+        public DateTime AttendanceDate { get; set; }
         public DateTime? TimeIn { get; set; }
         public DateTime? TimeOut { get; set; }
         public Employee EmployeeID { get; set; }
@@ -71,38 +71,41 @@ namespace WorkTabel.Model.ObIrtish
 
         public event PropertyChangedEventHandler? PropertyChanged;
     }
+}
+
+
 
     //27
-    public class AuthorizationModel : INotifyPropertyChanged
-    {
-        private string _userName;
-        public string UserName
-        {
-            get => _userName;
-            set => Set(ref _userName, value);
-        }
+    //public class AuthorizationModel : INotifyPropertyChanged
+    //{
+    //    private string _userName;
+    //    public string UserName
+    //    {
+    //        get => _userName;
+    //        set => Set(ref _userName, value);
+    //    }
 
-        private string _password;
-        public string Password
-        {
-            get => _password;
-            set => Set(ref _password, value);
-        }
+    //    private string _password;
+    //    public string Password
+    //    {
+    //        get => _password;
+    //        set => Set(ref _password, value);
+    //    }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+    //    public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+    //    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    //    {
+    //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    //    }
 
-        protected virtual bool Set<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-        {
-            if (Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-    }
+    //    protected virtual bool Set<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+    //    {
+    //        if (Equals(field, value)) return false;
+    //        field = value;
+    //        OnPropertyChanged(propertyName);
+    //        return true;
+    //    }
+    //}
 
-}
+

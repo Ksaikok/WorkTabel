@@ -169,6 +169,38 @@ namespace WorkTabel.ViewModels
             }
         }
 
+        //31
+        public class DynamicDayColumnGenerator : DataTemplateSelector
+        {
+            public int Year { get; set; }
+            public int Month { get; set; }
+
+            public override DataTemplate SelectTemplate(object item, DependencyObject container)
+            {
+                var dataGrid = container as System.Windows.Controls.DataGrid;
+
+                // Генерируем столбцы для каждого дня месяца
+                var days = Enumerable.Range(1, DateTime.DaysInMonth(Year, Month));
+                foreach (var day in days)
+                {
+                    var header = new DateTime(Year, Month, day).ToString("dd");
+                    var column = new DataGridTextColumn
+                    {
+                        Header = header,
+                        Binding = new Binding($"WorkedTime[{day - 1}]") { StringFormat = @"hh\:mm" }, // Доступ к WorkedTime по индексу дня
+                        Width = DataGridLength.Auto,
+                        IsReadOnly = false, // Можно сделать редактируемым
+                    };
+                    dataGrid.Columns.Add(column);
+                }
+
+                return null; //  Возвращаем null, так как шаблон не используется
+            }
+        }
+        //--31
+
+
+
         // Свойство для хранения отфильтрованной коллекции сотрудников
         private ObservableCollection<Employee> _filteredEmployee;
         public ObservableCollection<Employee> FilteredEmployee
@@ -253,6 +285,8 @@ namespace WorkTabel.ViewModels
                 );
             }
         }
+
+        
 
         //27
 
