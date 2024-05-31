@@ -39,7 +39,7 @@ namespace WorkTabel.ViewModels
 
 
             // Покажите окно авторизации
-            ShowAuthorizationWindow();
+            //ShowAuthorizationWindow();
         }
 
         // Событие PropertyChanged, наследуемое от ViewModel
@@ -62,11 +62,11 @@ namespace WorkTabel.ViewModels
 
         //----------------------------------------------------------------
 
-        // Свойство для хранения выбранного отдела
-        private string _selectedMonth;
-        public string SelectedMonth
+        // Свойство для хранения выбранного месяца
+        private int _selectedMonth = DateTime.Now.Month;
+        public int SelectedMonth
         {
-            // Получаем значение выбранного отдела
+            // Получаем значение выбранного месяца
             get => _selectedMonth;
 
             // Устанавливаем значение выбранного отдела, используя метод Set для уведомления об изменении
@@ -78,8 +78,8 @@ namespace WorkTabel.ViewModels
             }
         }
 
-        private string _selectedYear;
-        public string SelectedYear
+        private int _selectedYear = DateTime.Now.Year;
+        public int SelectedYear
         {
             // Получаем значение выбранного отдела
             get => _selectedYear;
@@ -90,8 +90,6 @@ namespace WorkTabel.ViewModels
                 Set(ref _selectedYear, value); // Используем метод Set из ViewModelBase
                 OnPropertyChanged("SelectedYearMonth");
                 CalYearMonth();
-
-
             }
         }
 
@@ -104,14 +102,18 @@ namespace WorkTabel.ViewModels
             // Устанавливаем значение выбранного отдела, используя метод Set для уведомления об изменении
             set
             {
-                _selectedYearMonth = new DateTime(Int32.Parse(SelectedYear), Int32.Parse(SelectedMonth), 1);
+                _selectedYearMonth = value;//new DateTime(Int32.Parse(SelectedYear), Int32.Parse(SelectedMonth), 1);
                 FilterEmployeesAttendancesByDate();
             }
         }
         private void CalYearMonth()
         {
-            _selectedYearMonth = new DateTime(Int32.Parse(SelectedYear), Int32.Parse(SelectedMonth), 1);
-            FilterEmployeesAttendancesByDate();
+            // Проверьте, что SelectedYear и SelectedMonth не равны null
+            if (SelectedYear != null && SelectedMonth != null)
+            {
+                _selectedYearMonth = new DateTime(SelectedYear, SelectedMonth, 1);
+                FilterEmployeesAttendancesByDate();
+            }
         }
 
         private void FilterEmployeesAttendancesByDate()
@@ -288,74 +290,74 @@ namespace WorkTabel.ViewModels
 
         
 
-        //27
+        ////27
 
-        // Метод для показа окна авторизации
-        private void ShowAuthorizationWindow()
-        {
-            // Создайте экземпляр AuthorizationViewModel
-            var authorizationViewModel = new AuthorizationViewModel();
+        //// Метод для показа окна авторизации
+        //private void ShowAuthorizationWindow()
+        //{
+        //    // Создайте экземпляр AuthorizationViewModel
+        //    var authorizationViewModel = new AuthorizationViewModel();
 
-            // Подпишитесь на событие OnLoginSuccess
-            authorizationViewModel.OnLoginSuccess += OnLoginSuccess;
+        //    // Подпишитесь на событие OnLoginSuccess
+        //    authorizationViewModel.OnLoginSuccess += OnLoginSuccess;
 
-            // Создайте окно авторизации
-            var authorizationWindow = new AuthorizationWindow() { DataContext = authorizationViewModel };
+        //    // Создайте окно авторизации
+        //    var authorizationWindow = new AuthorizationWindow() { DataContext = authorizationViewModel };
 
-            // Покажите окно
-            authorizationWindow.ShowDialog();
-        }
-        // Метод, который вызывается при успешной авторизации
-        private void OnLoginSuccess()
-        {
-            //// Проверьте, была ли выбрана роль гостя
-            //if (AuthorizationViewModel.IsGuestMode)
-            //{
-            //    // Если да, то установите IsAuthenticated в true и выполните действия для режима "Гость"
-            //    IsAuthenticated = true;
-            //    // ... (Логика для режима "Гость", например, ограничение доступа к некоторым функциям)
-            //}
-            //else
-            //{
-            //    // Если нет, то установите IsAuthenticated в true и выполните действия для авторизованного пользователя
-            //    IsAuthenticated = true;
-            //    // ... (Логика для авторизованного пользователя, например, предоставление полного доступа к функциям)
-            //}
-        }
+        //    // Покажите окно
+        //    authorizationWindow.ShowDialog();
+        //}
+        //// Метод, который вызывается при успешной авторизации
+        //private void OnLoginSuccess()
+        //{
+        //    //// Проверьте, была ли выбрана роль гостя
+        //    //if (AuthorizationViewModel.IsGuestMode)
+        //    //{
+        //    //    // Если да, то установите IsAuthenticated в true и выполните действия для режима "Гость"
+        //    //    IsAuthenticated = true;
+        //    //    // ... (Логика для режима "Гость", например, ограничение доступа к некоторым функциям)
+        //    //}
+        //    //else
+        //    //{
+        //    //    // Если нет, то установите IsAuthenticated в true и выполните действия для авторизованного пользователя
+        //    //    IsAuthenticated = true;
+        //    //    // ... (Логика для авторизованного пользователя, например, предоставление полного доступа к функциям)
+        //    //}
+        //}
 
-        public class AuthorizationModel : INotifyPropertyChanged
-        {
-            private string _userName;
-            public string UserName
-            {
-                get => _userName;
-                set => Set(ref _userName, value);
-            }
+        //public class AuthorizationModel : INotifyPropertyChanged
+        //{
+        //    private string _userName;
+        //    public string UserName
+        //    {
+        //        get => _userName;
+        //        set => Set(ref _userName, value);
+        //    }
 
-            private string _password;
-            public string Password
-            {
-                get => _password;
-                set => Set(ref _password, value);
-            }
+        //    private string _password;
+        //    public string Password
+        //    {
+        //        get => _password;
+        //        set => Set(ref _password, value);
+        //    }
 
-            public event PropertyChangedEventHandler PropertyChanged;
+        //    public event PropertyChangedEventHandler PropertyChanged;
 
-            protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            }
+        //    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        //    {
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        //    }
 
-            protected virtual bool Set<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
-            {
-                if (Equals(field, value)) return false;
-                field = value;
-                OnPropertyChanged(propertyName);
-                return true;
-            }
+        //    protected virtual bool Set<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+        //    {
+        //        if (Equals(field, value)) return false;
+        //        field = value;
+        //        OnPropertyChanged(propertyName);
+        //        return true;
+        //    }
 
 
-        }
+        //}
     }
 }
 

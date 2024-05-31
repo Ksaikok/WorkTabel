@@ -100,5 +100,51 @@ namespace WorkTabel.ViewModels.Base
             set => Set(ref _filteredEmployeesAttendancesByDate, value);
         }
 
+        // Свойство для хранения списка годов
+        private ObservableCollection<int> _years;
+        public ObservableCollection<int> Years
+        {
+            get
+            {
+                if (_years == null)
+                {
+                    // Создаем список годов, например, начиная с текущего года и назад 10 лет
+                    _years = new ObservableCollection<int>(Enumerable.Range(DateTime.Now.Year, 5).Reverse());
+                }
+                return _years;
+            }
+            set => Set(ref _years, value);
+        }
+
+        // Свойство для хранения списка месяцев (необязательно класс)
+        private ObservableCollection<KeyValuePair<int, string>> _months;
+        public ObservableCollection<KeyValuePair<int, string>> Months
+        {
+            get
+            {
+                if (_months == null)
+                {
+                    _months = new ObservableCollection<KeyValuePair<int, string>>
+            {
+                new KeyValuePair<int, string>(1, "Январь"),
+                new KeyValuePair<int, string>(2, "Февраль"),
+                new KeyValuePair<int, string>(3, "Март"),
+                new KeyValuePair<int, string>(4, "Апрель"),
+                new KeyValuePair<int, string>(5, "Май"),
+                new KeyValuePair<int, string>(6, "Июнь"),
+                new KeyValuePair<int, string>(7, "Июль"),
+                new KeyValuePair<int, string>(8, "Август"),
+                new KeyValuePair<int, string>(9, "Сентябрь"),
+                new KeyValuePair<int, string>(10, "Октябрь"),
+                new KeyValuePair<int, string>(11, "Ноябрь"),
+                new KeyValuePair<int, string>(12, "Декабрь")
+            };
+                }
+                return _months;
+            }
+            set => Set(ref _months, value);
+        }
+
+
     }
 }
