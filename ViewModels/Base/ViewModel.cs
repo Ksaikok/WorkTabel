@@ -126,18 +126,18 @@ namespace WorkTabel.ViewModels.Base
                 {
                     _months = new ObservableCollection<KeyValuePair<int, string>>
             {
-                new KeyValuePair<int, string>(1, "Январь"),
-                new KeyValuePair<int, string>(2, "Февраль"),
-                new KeyValuePair<int, string>(3, "Март"),
-                new KeyValuePair<int, string>(4, "Апрель"),
-                new KeyValuePair<int, string>(5, "Май"),
-                new KeyValuePair<int, string>(6, "Июнь"),
-                new KeyValuePair<int, string>(7, "Июль"),
-                new KeyValuePair<int, string>(8, "Август"),
-                new KeyValuePair<int, string>(9, "Сентябрь"),
-                new KeyValuePair<int, string>(10, "Октябрь"),
-                new KeyValuePair<int, string>(11, "Ноябрь"),
-                new KeyValuePair<int, string>(12, "Декабрь")
+                        new KeyValuePair<int, string>(1, "Январь"),
+                        new KeyValuePair<int, string>(2, "Февраль"),
+                        new KeyValuePair<int, string>(3, "Март"),
+                        new KeyValuePair<int, string>(4, "Апрель"),
+                        new KeyValuePair<int, string>(5, "Май"),
+                        new KeyValuePair<int, string>(6, "Июнь"),
+                        new KeyValuePair<int, string>(7, "Июль"),
+                        new KeyValuePair<int, string>(8, "Август"),
+                        new KeyValuePair<int, string>(9, "Сентябрь"),
+                        new KeyValuePair<int, string>(10, "Октябрь"),
+                        new KeyValuePair<int, string>(11, "Ноябрь"),
+                        new KeyValuePair<int, string>(12, "Декабрь")
             };
                 }
                 return _months;

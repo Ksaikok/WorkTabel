@@ -50,7 +50,7 @@
                                 <TextBlock Text="Табель" VerticalAlignment="Center" Margin="5,0,5,0" DockPanel.Dock="Left" Foreground="White"/>
                                 <ComboBox ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment}" DisplayMemberPath="DepartmentName" Margin="0,0,0,0" Width="232" BorderBrush="#7F000000" Foreground="#FF444444" Background="White" Height="21" FontSize="11"/>
                                 <ComboBox ItemsSource="{Binding Years}" SelectedItem="{Binding SelectedYear, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="30,0,0,0" BorderBrush="#7F000000" Foreground="#FF444444" Background="White" Height="21" FontSize="11"/>
-                                <ComboBox ItemsSource="{Binding Months}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedItem="{Binding SelectedMonth, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="20,0,0,0" BorderBrush="#7F000000" Foreground="#FF444444" Background="White" Height="21" FontSize="11"/>
+                                <ComboBox  ItemsSource="{Binding Months}" DisplayMemberPath="Value" SelectedValuePath="Key" Width="150" Margin="20,0,0,0" BorderBrush="#7F000000" Foreground="#FF444444" Background="White" Height="21" FontSize="11"/>
 
                             </DockPanel>
                         </GroupBox.Header>
