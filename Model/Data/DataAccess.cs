@@ -139,7 +139,6 @@ namespace WorkTabel.Model.Data
                                             Definition = reader.GetString(2),
                                         });
                                     });
-
                                 }
                             }
                         }
@@ -151,7 +150,6 @@ namespace WorkTabel.Model.Data
                     // Обработка исключения
                     MessageBox.Show("Не удалось подключиться к базе данных. Не удалось подключиться к таблице AttendanceType. " + ex.Message);
                 }
-
                 return attendanceTypes;
             }
         }
@@ -159,19 +157,15 @@ namespace WorkTabel.Model.Data
         // инфа о посещении (кто когда и сколько отработал)
         public class AttendanceDataAccess
         {
-
             private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WorkTabelDB"].ConnectionString;
-
             public ObservableCollection<Attendance> GetAttendances()
             {
                 var attendances = new ObservableCollection<Attendance>();
                 try
                 {
-
                     using (var connection = new MySqlConnection(_connectionString))
                     {
                         connection.Open();
-
                         using (var command = new MySqlCommand("SELECT *  FROM Attendance", connection))
                         {
                             using (var reader = command.ExecuteReader())
@@ -186,18 +180,18 @@ namespace WorkTabel.Model.Data
                                             AttendanceDate = reader.GetDateTime(1),
                                             TimeIn = reader.GetDateTime(2),
                                             TimeOut = reader.GetDateTime(3),
+                                            WorkedOut = reader.GetInt32(4),
                                             EmployeeID = new Employee
                                             {
-                                                EmployeeID = reader.GetInt32(4),
+                                                EmployeeID = reader.GetInt32(5),
                                             },
                                             AttendanceTypeID = new AttendanceType
                                             {
-                                                AttendanceTypeID = reader.GetInt32(4),
+                                                AttendanceTypeID = reader.GetInt32(6),
                                             }
 
                                         });
                                     });
-
                                 }
                             }
                         }
@@ -214,9 +208,48 @@ namespace WorkTabel.Model.Data
                 {
                     Console.WriteLine($"Непредвиденная ошибка: {ex.Message}");
                 }
-
                 return attendances;
             }
         }
+
+        // делаем запись в таблицу Attendance
+        public static void SaveAttendances(List<Attendance> attendances)
+        {
+            using (var connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["WorkTabelDB"].ConnectionString))
+            {
+                connection.Open();
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        foreach (var attendance in attendances)
+                        {
+                            // Сохраняем данные для каждого дня
+                            for (int i = 0; i < attendance.WorkedTime.Count; i++)
+                            {
+                                using (var command = new MySqlCommand("INSERT INTO Attendance (Date, EmployeeID, AttendanceTypeID, WorkedOut) VALUES (@Date, @EmployeeID, @AttendanceTypeID, @WorkedOut)", connection))
+                                {
+                                    command.Parameters.AddWithValue("@Date", attendance.AttendanceDate.AddDays(i));
+                                    command.Parameters.AddWithValue("@EmployeeID", attendance.EmployeeID.EmployeeID);
+                                    command.Parameters.AddWithValue("@AttendanceTypeID", attendance.AttendanceTypeID.AttendanceTypeID);
+                                    // Используйте WorkedTime[i] для записи отработанного времени для каждого дня
+                                    command.Parameters.AddWithValue("@WorkedOut", attendance.WorkedTime[i]);
+                                    command.ExecuteNonQuery();
+                                }
+                            }
+                        }
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        // Обработайте ошибку
+                        Console.WriteLine($"Ошибка записи в базу данных: {ex.Message}");
+                    }
+                }
+                connection.Close();
+            }
+        }
+
     }
 }

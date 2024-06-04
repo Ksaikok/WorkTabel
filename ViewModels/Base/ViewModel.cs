@@ -1,7 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using WorkTabel.Model.Data;
 using WorkTabel.Model.ObIrtish;
+using static WorkTabel.ViewModels.MainViewModel;
 
 namespace WorkTabel.ViewModels.Base
 {
@@ -75,6 +77,19 @@ namespace WorkTabel.ViewModels.Base
             set => Set(ref _attendanceTypes, value);
         }
 
+        // Приватное поле для хранения коллекции  посещаемости
+        private ObservableCollection<Attendance> _attendance;
+
+        // Публичное свойство для доступа к коллекции  посещаемости
+        public ObservableCollection<Attendance> Attendance
+        {
+            // Получаем значение коллекции
+            get => _attendance;
+
+            // Устанавливаем значение коллекции, используя метод Set для уведомления о изменении
+            set => Set(ref _attendance, value);
+        }
+
         // Приватное поле для хранения отфильтрованной коллекции сотрудников
         private ObservableCollection<Employee> _FilteredEmployeesByDepartment;
 
@@ -144,6 +159,19 @@ namespace WorkTabel.ViewModels.Base
             }
             set => Set(ref _months, value);
         }
+
+        // Свойство для хранения выбранного посещения
+        private Attendance _selectedAttendance;
+        public Attendance SelectedAttendance
+        {
+            get => _selectedAttendance;
+            set => Set(ref _selectedAttendance, value);
+        }
+
+        private System.Collections.IEnumerable filterEmployeesAttendancesByDate;
+
+        public System.Collections.IEnumerable FilterEmployeesAttendancesByDate { get => filterEmployeesAttendancesByDate; set => Set(ref filterEmployeesAttendancesByDate, value); }
+
 
 
     }

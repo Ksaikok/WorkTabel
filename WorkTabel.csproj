@@ -9,6 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="c1.wpf.grid" Version="7.0.20233.662" />
+    <PackageReference Include="C1.Xaml.WPF.FlexGrid" Version="4.6.20241.839" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="linq2db" Version="5.4.1" />
     <PackageReference Include="MaterialDesignColors" Version="3.0.0" />

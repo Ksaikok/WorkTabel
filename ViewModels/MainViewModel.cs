@@ -15,6 +15,8 @@ using System.Windows.Controls;
 using static MaterialDesignThemes.Wpf.Theme;
 using System.Globalization;
 using System.Windows.Data;
+using WorkTabel.Model.Data;
+using WorkTabel.Model.Turniket;
 
 namespace WorkTabel.ViewModels
 {
@@ -36,7 +38,6 @@ namespace WorkTabel.ViewModels
             // инициализация выбранного сотрудника
             FilteredEmployee = new ObservableCollection<Employee>();
             FilteredEmployeesAttendancesByDate = new ObservableCollection<Employee>();
-
 
             // Покажите окно авторизации
             //ShowAuthorizationWindow();
@@ -62,6 +63,7 @@ namespace WorkTabel.ViewModels
 
         //----------------------------------------------------------------
 
+        
         // Свойство для хранения выбранного месяца
         private int _selectedMonth = DateTime.Now.Month;
         public int SelectedMonth
@@ -89,7 +91,7 @@ namespace WorkTabel.ViewModels
             {
                 Set(ref _selectedYear, value); // Используем метод Set из ViewModelBase
                 OnPropertyChanged("SelectedYearMonth");
-                CalYearMonth();
+                
             }
         }
 
@@ -106,6 +108,7 @@ namespace WorkTabel.ViewModels
                 FilterEmployeesAttendancesByDate();
             }
         }
+
         private void CalYearMonth()
         {
             // Проверьте, что SelectedYear и SelectedMonth не равны null
@@ -113,8 +116,10 @@ namespace WorkTabel.ViewModels
             {
                 _selectedYearMonth = new DateTime(SelectedYear, SelectedMonth, 1);
                 FilterEmployeesAttendancesByDate();
+                OnPropertyChanged(nameof(SelectedYearMonth)); // Уведомить о изменении свойства
             }
         }
+     
 
         private void FilterEmployeesAttendancesByDate()
         {
@@ -171,38 +176,7 @@ namespace WorkTabel.ViewModels
             }
         }
 
-        //31
-        public class DynamicDayColumnGenerator : DataTemplateSelector
-        {
-            public int Year { get; set; }
-            public int Month { get; set; }
-
-            public override DataTemplate SelectTemplate(object item, DependencyObject container)
-            {
-                var dataGrid = container as System.Windows.Controls.DataGrid;
-
-                // Генерируем столбцы для каждого дня месяца
-                var days = Enumerable.Range(1, DateTime.DaysInMonth(Year, Month));
-                foreach (var day in days)
-                {
-                    var header = new DateTime(Year, Month, day).ToString("dd");
-                    var column = new DataGridTextColumn
-                    {
-                        Header = header,
-                        Binding = new Binding($"WorkedTime[{day - 1}]") { StringFormat = @"hh\:mm" }, // Доступ к WorkedTime по индексу дня
-                        Width = DataGridLength.Auto,
-                        IsReadOnly = false, // Можно сделать редактируемым
-                    };
-                    dataGrid.Columns.Add(column);
-                }
-
-                return null; //  Возвращаем null, так как шаблон не используется
-            }
-        }
-        //--31
-
-
-
+        
         // Свойство для хранения отфильтрованной коллекции сотрудников
         private ObservableCollection<Employee> _filteredEmployee;
         public ObservableCollection<Employee> FilteredEmployee
@@ -288,7 +262,48 @@ namespace WorkTabel.ViewModels
             }
         }
 
-        
+        //02 
+        private RelayCommand _generateAttendancesCommand;
+        public RelayCommand GenerateAttendancesCommand => _generateAttendancesCommand ?? (_generateAttendancesCommand = new RelayCommand(GenerateAttendances));
+
+        private void GenerateAttendances()
+        {
+            // 1. Получите выбранный отдел, год и месяц из MainViewModel
+            var department = SelectedDepartment;
+            var year = SelectedYear;
+            var month = SelectedMonth;
+
+            // 2. Генерируйте посещения
+            var generatedAttendances = TurnikSim.GenerateAttendances(year, month, department, AttendanceTypes.ToList());
+
+            // 3. Запишите сгенерированные посещения в базу данных
+            //    (используйте DataAccess)
+           // DataAccess.SaveAttendances(generatedAttendances);
+        }
+
+        //---02
+
+
+        //  Новый метод для обновления отфильтрованных сотрудников
+        private void UpdateFilteredEmployees()
+        {
+            if (SelectedDepartment == null || SelectedYear == null || SelectedMonth == null)
+            {
+                FilteredEmployeesByDepartment = new ObservableCollection<Employee>(Employees);
+            }
+            else
+            {
+                FilteredEmployeesByDepartment = new ObservableCollection<Employee>(Employees.Where(e =>
+                e.DepartmentID == SelectedDepartment.DepartmentID
+                ));
+                //  фильтруйте по году и месяцу, если нужно
+                FilteredEmployeesByDepartment = new ObservableCollection<Employee>(FilteredEmployeesByDepartment.Where(e => 
+                e.Attendances.Any(a => a.AttendanceDate.Year == SelectedYear && a.AttendanceDate.Month == SelectedMonth)
+                ));
+            }
+        }
+
+
 
         ////27
 

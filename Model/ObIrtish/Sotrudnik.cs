@@ -59,18 +59,37 @@ namespace WorkTabel.Model.ObIrtish
         public DateTime? TimeOut { get; set; }
         public Employee EmployeeID { get; set; }
         public AttendanceType? AttendanceTypeID { get; set; }
-        public TimeSpan? WorkedTime
+        public List<int?> WorkedTime { get; set; } = new List<int?>();
+        public int WorkedOut {  get; set; }
+        //{
+        //    get
+        //    {
+        //        if (WorkedOut.HasValue)
+        //            return WorkedOut.Value;
+        //        else
+        //        {
+        //            if (TimeIn.HasValue && TimeOut.HasValue)
+        //                return TimeOut.Value - TimeIn.Value;
+        //            else
+        //                return null;
+        //        }
+        //    }
+        //    set { }            
+        //}
+        public event PropertyChangedEventHandler? PropertyChanged;
+        // Метод для уведомления о изменениях свойств
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            get
-            {
-                if (TimeIn.HasValue && TimeOut.HasValue)
-                    return TimeOut.Value - TimeIn.Value;
-                else
-                    return null;
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        protected virtual bool Set<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
     }
 }
 

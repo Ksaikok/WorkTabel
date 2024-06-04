@@ -9,7 +9,7 @@ using static WorkTabel.Model.Data.DataAccess;
 
 namespace WorkTabel.Model.Turniket
 {
-    class TurnikSim
+    public class TurnikSim
     {
         // Метод для генерации посещений
         public static List<Attendance> GenerateAttendances(int year, int month, Department department, List<AttendanceType> attendanceTypes)
@@ -35,13 +35,16 @@ namespace WorkTabel.Model.Turniket
                         {
                             AttendanceDate = new DateTime(year, month, i),
                             EmployeeID = turEmployee,
-                            AttendanceTypeID = attendanceTypes[random.Next(attendanceTypes.Count)]
-                        };
+                            AttendanceTypeID = attendanceTypes[random.Next(attendanceTypes.Count)],
+                            WorkedTime = Enumerable.Range(1, DateTime.DaysInMonth(year, month)).Select(day => (int?)random.Next(300, 600)).ToList()
+                        };// Случайное значение от 300 до 600 минут
 
                         // 6. Генерировать случайное время входа и выхода
                         //    (обратите внимание на ограничения по времени для каждого типа посещения)
                         attendance.TimeIn = new DateTime(year, month, i).Date + new TimeSpan(random.Next(7, 10), random.Next(0, 59), 0);
                         attendance.TimeOut = attendance.TimeIn.Value.Date + new TimeSpan(random.Next(16, 17), random.Next(0, 59), 0);
+                        // Рассчитываем отработанное время
+                        attendance.WorkedTime.Add(random.Next(300, 600)); // Случайное значение от 300 до 600 минут
 
                         // 7. Добавить посещение в список
                         attendances.Add(attendance);
