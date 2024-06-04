@@ -57,7 +57,14 @@
                             </DockPanel>
                         </GroupBox.Header>
 
-                        <DataGrid Visibility="Visible" Background="White" ItemsSource="{Binding Attendance}" AutoGenerateColumns="False" HeadersVisibility="Column" IsReadOnly="False" FontSize="12"  >
+                        <DataGrid Background="White" ItemsSource="{Binding Departments}" 
+                                  AutoGenerateColumns="False" 
+                                  HeadersVisibility="Column" 
+                                  IsReadOnly="False" 
+                                  FontSize="12"
+                                  GridLinesVisibility="All"
+                                  Visibility="Visible"
+                                  SelectionUnit="Cell">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="ID" Binding="{Binding AttendanceID}" Width="45" IsReadOnly="True" />
                                 <DataGridTextColumn Header="ФИО" Binding="{Binding EmployeeID.FullName}" Width="60" IsReadOnly="True"/>
