@@ -16,7 +16,7 @@ namespace WorkTabel.Model.Turniket
         {
             // 1. Получить список сотрудников из выбранного отдела
             var turEmployeeDataAccess = new EmployeeDataAccess(); // Создайте экземпляр
-            var turEmployees = turEmployeeDataAccess.GetEmployees().Where(e => e.DepartmentID == department.DepartmentID).ToList();
+            var turEmployees = turEmployeeDataAccess.GetEmployees().Where(e => e.DepartmentID.DepartmentID == department.DepartmentID).ToList();
             // 2. Создать список посещений
             var attendances = new List<Attendance>();
             foreach (var turEmployee in turEmployees)

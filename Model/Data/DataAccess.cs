@@ -39,8 +39,11 @@ namespace WorkTabel.Model.Data
                                             EmployeeID = reader.GetInt32(0),
                                             FullName = reader.GetString(1),
                                             TabelNum = reader.GetInt32(2),
-                                            PositionID = reader.GetInt32(3),
-                                            DepartmentID = reader.GetInt32(4),
+                                            PositionID = reader.GetInt32(3),                                            
+                                            DepartmentID = new Department
+                                            {
+                                                DepartmentID = reader.GetInt32(4)
+                                            },
                                             PhoneNumber = reader.GetString(5),
                                             Email = reader.GetString(6),
                                             Birthday = reader.GetDateTime(7),
