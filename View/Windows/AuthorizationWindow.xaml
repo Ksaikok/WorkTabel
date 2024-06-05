@@ -5,10 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WorkTabel.View.Windows" xmlns:viewmodels="clr-namespace:WorkTabel.ViewModels" 
         mc:Ignorable="d"
-        Title="Авторизация" Height="450" Width="800" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
-    <!--<Window.DataContext>
-        <viewmodels:AuthorizationViewModel/>
-    </Window.DataContext>-->
+        Title="Авторизация" Height="450" Width="700" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Cursor="">
     <Border BorderThickness="10" BorderBrush="#FF6181D0">
         <Grid>
             <Grid.RowDefinitions>
@@ -22,14 +19,14 @@
 
             <Label Grid.Row="0" Content="Добро пожаловать!" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="10"/>
 
-            <Label Grid.Row="1" Content="Имя пользователя:" Margin="10" FontSize="17"/>
+            <Label Grid.Row="1" Content="Имя пользователя:" Margin="10,10,10,0" FontSize="17"/>
             <TextBox Grid.Row="2"  Margin="10" FontSize="18"/>
 
-            <Label Grid.Row="3" Content="Пароль:" Margin="10" FontSize="17"/>
+            <Label Grid.Row="3" Content="Пароль:" Margin="10,10,10,0" FontSize="17"/>
             <PasswordBox Grid.Row="4"  Margin="10" Cursor="" FontSize="18"/>
 
-            <Button Grid.Row="5" Content="Войти" Command="{Binding LoginCommand}" Margin="200,29,200,143" Cursor="Hand" Background="#FF305BC5" BorderBrush="#FF305BC5"/>
-            <Button Grid.Row="5" Content="Войти как гость" Command="{Binding EnterGuestModeCommand}" Margin="200,70,200,102" Background="#FF305BC5" BorderBrush="#FF305BC5" Cursor="Hand"/>
+            <Button Grid.Row="5" Content="Войти" Command="{Binding LoginCommand}" Margin="250,30,250,142" Background="#FF305BC5" BorderBrush="#FF305BC5" Cursor="Hand" FontSize="18" Height="40"/>
+            <Button Grid.Row="5" Content="Гость" Command="{Binding EnterGuestModeCommand}" Margin="250,86,250,86" Background="#FF305BC5" BorderBrush="#FF305BC5" Cursor="Hand" FontSize="18" Height="40"/>
         </Grid>
     </Border>
 </Window>

@@ -26,19 +26,32 @@ namespace WorkTabel.Model.ObIrtish
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
     }
+    public class Position : INotifyPropertyChanged
+    {
+        public int PositionID { get; set; }
+        public string PositionName { get; set; }
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "Sotrudnik PropertyChanged")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
+    }
     // класс сотрудника с его атрибутами
     public class Employee : INotifyPropertyChanged
     {
         public int EmployeeID { get; set; }
         public string? FullName { get; set; }
         public int TabelNum { get; set; }
-        public int PositionID { get; set; }
-        public Department DepartmentID { get; set; }        
+        public Position PositionID { get; set; }
+        public Department DepartmentID { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public DateTime Birthday { get; set; }
+        //public string PositionName {  get; set; }
         public Collection<Attendance> Attendances { get; set; }
         public Collection<Department> Departments { get; set; }
+        public Collection<Position> Positions { get; set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -46,6 +59,16 @@ namespace WorkTabel.Model.ObIrtish
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        //редактор от насти!!!
+        private void SetProperty<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (!Equals(field, value))
+            {
+                field = value;
+                OnPropertyChanged(propertyName);
+            }
         }
 
     }

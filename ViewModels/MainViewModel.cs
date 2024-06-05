@@ -17,6 +17,7 @@ using System.Globalization;
 using System.Windows.Data;
 using WorkTabel.Model.Data;
 using WorkTabel.Model.Turniket;
+using System.Windows.Input;
 
 namespace WorkTabel.ViewModels
 {
@@ -28,8 +29,11 @@ namespace WorkTabel.ViewModels
         public MainViewModel()
         {
             // Загружаем данные из базы данных
+            _employeeDataAccess = new EmployeeDataAccess(); //от насти!!! 05
             Departments = new ObservableCollection<Department>(new DepartmentDataAccess().GetDepartments());
-            Employees = new ObservableCollection<Employee>(new EmployeeDataAccess().GetEmployees());
+            Positions = new ObservableCollection<Position>(new PositionDataAccess().GetPositions());
+            Employees = new ObservableCollection<Employee>(LoadEmployeesWithDepartPositions());
+            //Employees = new ObservableCollection<Employee>(new EmployeeDataAccess().GetEmployees());
             AttendanceTypes = new ObservableCollection<AttendanceType>(new AttendanceTypeDataAccess().GetAttendanceTypes());
             Attendances = new ObservableCollection<Attendance>(new AttendanceDataAccess().GetAttendances());
 
@@ -54,6 +58,7 @@ namespace WorkTabel.ViewModels
         // Свойства для хранения данных
         // Коллекция отделов
         public ObservableCollection<Department> Departments { get; set; }
+        public ObservableCollection<Position> Positions { get; set; }
         // Коллекция сотрудников
         public ObservableCollection<Employee> Employees { get; set; }
         // Коллекция типов посещаемости
@@ -62,8 +67,65 @@ namespace WorkTabel.ViewModels
         public ObservableCollection<Attendance> Attendances { get; set; }
 
         //----------------------------------------------------------------
+        private readonly EmployeeDataAccess _employeeDataAccess; //05
 
-        
+
+        // Метод для загрузки сотрудников и установки названия отдела
+        private IEnumerable<Employee> LoadEmployeesWithDepartPositions()
+        {
+            var employeeDataAccess = new EmployeeDataAccess();
+            var departmentDataAccess = new DepartmentDataAccess();
+            var positionDataAccess = new PositionDataAccess();
+
+            var employees = employeeDataAccess.GetEmployees();
+            var departments = departmentDataAccess.GetDepartments();
+            var positions = positionDataAccess.GetPositions();
+
+            // Создаем словарь для быстрого поиска названий отделов по их ID
+            var departmentDict = departments.ToDictionary(d => d.DepartmentID, d => d.DepartmentName);
+            var positionDict = positions.ToDictionary(d => d.PositionID, d => d.PositionName);
+
+            // Обновляем название отдела для каждого сотрудника
+            foreach (var employee in employees)
+            {
+                if (departmentDict.TryGetValue(employee.DepartmentID.DepartmentID, out var departmentName))
+                {
+                    employee.DepartmentID.DepartmentName = departmentName;
+                }
+                if (positionDict.TryGetValue(employee.PositionID.PositionID, out var positionName))
+                {
+                    employee.PositionID.PositionName = positionName;
+                }
+            }
+
+            return employees;
+        }
+
+
+        //05 от насти!!!
+        // Свойство для строки поиска
+        private string _searchText;
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                if (Set(ref _searchText, value))
+                {
+                    FilterEmployeesByDepartment(); // Обновляем фильтр при изменении строки поиска
+                }
+            }
+        }
+        public ICommand SaveCommand => new RelayCommand(SaveChanges);
+
+        private void SaveChanges()
+        {
+            foreach (var employee in Employees)
+            {
+                _employeeDataAccess.UpdateEmployee(employee);
+            }
+        }
+
         // Свойство для хранения выбранного месяца
         private int _selectedMonth = DateTime.Now.Month;
         public int SelectedMonth
@@ -242,26 +304,33 @@ namespace WorkTabel.ViewModels
 
 
 
-        // Метод фильтрации сотрудников по выбранному отделу
         private void FilterEmployeesByDepartment()
         {
-            // Проверяем, выбран ли отдел
-            if (SelectedDepartment == null)
+            if (SelectedDepartment == null && string.IsNullOrWhiteSpace(SearchText))
             {
-                // Если отдел не выбран, показываем всех сотрудников
+                // Если отдел не выбран и строка поиска пуста, показываем всех сотрудников
                 FilteredEmployeesByDepartment = new ObservableCollection<Employee>(Employees);
             }
             else
             {
-                // Если отдел выбран, фильтруем сотрудников по выбранному отделу
-                FilteredEmployeesByDepartment = new ObservableCollection<Employee>(
-                    // Фильтруем коллекцию Employees, оставляя сотрудников, 
-                    // чей DepartmentID совпадает с DepartmentID выбранного отдела
-                    Employees.Where(e => e.DepartmentID.DepartmentID == SelectedDepartment.DepartmentID)
-                );
+                // Если отдел выбран или введена строка поиска, фильтруем сотрудников
+                var filtered = Employees.AsEnumerable();
+
+                if (SelectedDepartment != null)
+                {
+                    filtered = filtered.Where(e => e.DepartmentID.DepartmentID == SelectedDepartment.DepartmentID);
+                }
+
+                if (!string.IsNullOrWhiteSpace(SearchText))
+                {
+                    filtered = filtered.Where(e => e.FullName.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
+                }
+
+                FilteredEmployeesByDepartment = new ObservableCollection<Employee>(filtered);
             }
         }
 
+       
         //02 
         private RelayCommand _generateAttendancesCommand;
         public RelayCommand GenerateAttendancesCommand => _generateAttendancesCommand ?? (_generateAttendancesCommand = new RelayCommand(GenerateAttendances));
@@ -282,6 +351,7 @@ namespace WorkTabel.ViewModels
         }
 
         //---02
+
 
 
         //  Новый метод для обновления отфильтрованных сотрудников

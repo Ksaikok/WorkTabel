@@ -36,7 +36,7 @@
             </MenuItem>
 
             <MenuItem Header="Экспорт" Height="40">
-                <MenuItem Header="Ecxel Форма T-12"/>
+                <!--<MenuItem Header="Ecxel Форма T-12"/>-->
                 <MenuItem Header="Word Форма T-12"/>
             </MenuItem>
 
@@ -107,7 +107,7 @@
                                 <DataGridTextColumn Header="29" Binding="{Binding WorkedTime[28], StringFormat=hh\:mm}" Width="Auto" />
                                 <DataGridTextColumn Header="30" Binding="{Binding WorkedTime[29], StringFormat=hh\:mm}" Width="Auto" />
                                 <DataGridTextColumn Header="31" Binding="{Binding WorkedTime[30], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="Отработано" Binding="{Binding WorkedOut}" Width="15*"/>
+                                <DataGridTextColumn Header="Итого" Binding="{Binding WorkedOut}" Width="10*"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </GroupBox>
@@ -117,7 +117,7 @@
             <TabItem Header="Сотрудники" HorizontalAlignment="Left" Padding="0,0,0,0" Height="25">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="310"/>
+                        <ColumnDefinition Width="450"/>
                         <ColumnDefinition Width="500"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
@@ -128,6 +128,7 @@
                         <GroupBox.Header>
                             <DockPanel LastChildFill="False">
                                 <TextBlock Text="Сотрудники" VerticalAlignment="Center" Margin="5,0,5,0" DockPanel.Dock="Left" Foreground="White"/>
+                                <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Padding="5,0" DockPanel.Dock="Right" Height="19" Width="138" FontSize="13" FontWeight="Normal" Background="#FF3F51B5" Foreground="White" BorderBrush="White" RenderTransformOrigin="0.5,0.5"/>
                                 <!--<Button Content="Показать всех" Command="{Binding ShowAllEmployeesCommand}" Padding="5,0" DockPanel.Dock="Right" Height="16" Width="102" FontSize="13" FontWeight="Normal" />-->
                             </DockPanel>
                         </GroupBox.Header>
@@ -139,7 +140,7 @@
                         </DataGrid>
                     </GroupBox>
                     <GroupBox Grid.Column="2" Header="Информация" FontSize="16" BorderBrush="White">
-                        <DataGrid ItemsSource="{Binding FilteredEmployee}" SelectedItem="" SelectionMode="Single" SelectionUnit="Cell" AutoGenerateColumns="False" RowHeight="1500" Background="White" FontSize="15">
+                        <DataGrid ItemsSource="{Binding FilteredEmployee}" SelectedItem="" SelectionMode="Single" SelectionUnit="Cell" AutoGenerateColumns="False" RowHeight="1500" Background="White" FontSize="15" RenderTransformOrigin="0.5,0.5">
 
                             <DataGrid.Resources>
                                 <Style x:Key="NoHighlightTextColumnStyle" TargetType="{x:Type DataGridCell}">
@@ -187,22 +188,23 @@
                             </DataGrid.CellStyle>
 
                             <DataGrid.Columns >
-                                <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" ElementStyle="{StaticResource CenteredTextStyle}" FontSize="16"/>
-                                <DataGridTextColumn Header="Табельный номер" Binding="{Binding TabelNum}" ElementStyle="{StaticResource CenteredTextStyle}" FontSize="16"/>
-                                <DataGridTextColumn Header="Должность" Binding="{Binding PositionID}" ElementStyle="{StaticResource CenteredTextStyle}" FontSize="16"/>
-                                <DataGridTextColumn Header="Отдел"  Binding="{Binding DepartmentID}" ElementStyle="{StaticResource CenteredTextStyle}" FontSize="16"/>
-                                <DataGridTextColumn Header="Номер телефона" Binding="{Binding PhoneNumber}" ElementStyle="{StaticResource CenteredTextStyle}" FontSize="16"/>
-                                <DataGridTextColumn Header="Электронная почта" Binding="{Binding Email}" ElementStyle="{StaticResource CenteredTextStyle}" FontSize="16"/>
-                                <DataGridTextColumn Header="День рождения" Binding="{Binding Birthday, StringFormat=dd\.MM\.yyyy }" ElementStyle="{StaticResource CenteredTextStyle}" FontSize="16"/>
+                                <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" ElementStyle="{StaticResource CenteredTextStyle}" FontSize="16" CanUserSort="False"/>
+                                <DataGridTextColumn Header="Табельный номер" Binding="{Binding TabelNum}" ElementStyle="{StaticResource CenteredTextStyle}" FontSize="16" CanUserSort="False"/>
+                                <DataGridTextColumn Header="Должность" Binding="{Binding PositionID.PositionName}" ElementStyle="{StaticResource CenteredTextStyle}" FontSize="16" CanUserSort="False"/>
+                                <DataGridTextColumn Header="Отдел"  Binding="{Binding DepartmentID.DepartmentName}" ElementStyle="{StaticResource CenteredTextStyle}" FontSize="16" CanUserSort="False"/>
+                                <DataGridTextColumn Header="Номер телефона" Binding="{Binding PhoneNumber}" ElementStyle="{StaticResource CenteredTextStyle}" FontSize="16" CanUserSort="False"/>
+                                <DataGridTextColumn Header="Электронная почта" Binding="{Binding Email}" ElementStyle="{StaticResource CenteredTextStyle}" FontSize="16" CanUserSort="False"/>
+                                <DataGridTextColumn Header="День рождения" Binding="{Binding Birthday, StringFormat=dd\.MM\.yyyy }" ElementStyle="{StaticResource CenteredTextStyle}" FontSize="16" CanUserSort="False"/>
                             </DataGrid.Columns>
 
                         </DataGrid>
                     </GroupBox>
                 </Grid>
+
             </TabItem>
         </TabControl>
         <!--Тип посещения снизу-->
-        <Grid Grid.Row="1" MinHeight="100">
+        <Grid Grid.Row="1" MinHeight="100" MaxHeight="130" >
             <GroupBox Grid.Column="0" Header="Тип посещения" FontSize="14" >
                 <Grid Background="White">
                     <ItemsControl ItemsSource="{Binding AttendanceTypes}">
@@ -235,6 +237,8 @@
                 <ProgressBar Width="98" Height="14" Value="30"/>
             </StatusBarItem>
         </StatusBar>
+        <Button Content="Сохранить изменения" Command="{Binding SaveCommand}" Margin="0,20,10,0" FontSize="8" HorizontalAlignment="Right" Width="122" Height="32" VerticalAlignment="Top" />
+
 
     </Grid>
 </Window>

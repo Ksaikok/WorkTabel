@@ -90,6 +90,19 @@ namespace WorkTabel.ViewModels.Base
             set => Set(ref _attendance, value);
         }
 
+        // Приватное поле для хранения коллекции отделов
+        private ObservableCollection<Position> _positions;
+
+        // Публичное свойство для доступа к коллекции отделов
+        public ObservableCollection<Position> Positions
+        {
+            // Получаем значение коллекции
+            get => _positions;
+
+            // Устанавливаем значение коллекции, используя метод Set для уведомления о изменении
+            set => Set(ref _positions, value);
+        }
+
         // Приватное поле для хранения отфильтрованной коллекции сотрудников
         private ObservableCollection<Employee> _FilteredEmployeesByDepartment;
 

@@ -13,7 +13,6 @@ namespace WorkTabel.Model.Data
         //загрузка инфы о сотрудниках
         public class EmployeeDataAccess
         {
-
             private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WorkTabelDB"].ConnectionString;
 
             public ObservableCollection<Employee> GetEmployees()
@@ -21,12 +20,11 @@ namespace WorkTabel.Model.Data
                 var employees = new ObservableCollection<Employee>();
                 try
                 {
-
                     using (var connection = new MySqlConnection(_connectionString))
                     {
                         connection.Open();
 
-                        using (var command = new MySqlCommand("SELECT *  FROM Employees", connection))
+                        using (var command = new MySqlCommand("SELECT * FROM Employees", connection))
                         {
                             using (var reader = command.ExecuteReader())
                             {
@@ -39,7 +37,10 @@ namespace WorkTabel.Model.Data
                                             EmployeeID = reader.GetInt32(0),
                                             FullName = reader.GetString(1),
                                             TabelNum = reader.GetInt32(2),
-                                            PositionID = reader.GetInt32(3),                                            
+                                            PositionID = new Position
+                                            {
+                                                PositionID = reader.GetInt32(3),
+                                            },
                                             DepartmentID = new Department
                                             {
                                                 DepartmentID = reader.GetInt32(4)
@@ -49,7 +50,6 @@ namespace WorkTabel.Model.Data
                                             Birthday = reader.GetDateTime(7),
                                         });
                                     });
-
                                 }
                             }
                         }
@@ -62,6 +62,37 @@ namespace WorkTabel.Model.Data
                     MessageBox.Show("Не удалось подключиться к базе данных. Не удалось подключиться к таблице Employee. " + ex.Message);
                 }
                 return employees;
+            }
+
+            //редактирование сотр от насти!!!
+            public void UpdateEmployee(Employee employee)
+            {
+                try
+                {
+                    using (var connection = new MySqlConnection(_connectionString))
+                    {
+                        connection.Open();
+                        var query = "UPDATE Employees SET FullName = @FullName, TabelNum = @TabelNum, PositionID = @PositionID, DepartmentID = @DepartmentID, PhoneNumber = @PhoneNumber, Email = @Email, Birthday = @Birthday WHERE EmployeeID = @EmployeeID";
+                        using (var command = new MySqlCommand(query, connection))
+                        {
+                            command.Parameters.AddWithValue("@EmployeeID", employee.EmployeeID);
+                            command.Parameters.AddWithValue("@FullName", employee.FullName);
+                            command.Parameters.AddWithValue("@TabelNum", employee.TabelNum);
+                            command.Parameters.AddWithValue("@PositionID", employee.PositionID.PositionID);
+                            command.Parameters.AddWithValue("@DepartmentID", employee.DepartmentID.DepartmentID);
+                            command.Parameters.AddWithValue("@PhoneNumber", employee.PhoneNumber);
+                            command.Parameters.AddWithValue("@Email", employee.Email);
+                            command.Parameters.AddWithValue("@Birthday", employee.Birthday);
+
+                            command.ExecuteNonQuery();
+                        }
+                        connection.Close();
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("Не удалось обновить данные сотрудника. " + ex.Message);
+                }
             }
         }
 
@@ -108,6 +139,48 @@ namespace WorkTabel.Model.Data
                     MessageBox.Show("Не удалось подключиться к базе данных. Не удалось подключиться к таблице Department. " + ex.Message);
                 }
                 return departments;
+            }
+        }
+
+        public class PositionDataAccess
+        {
+            private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WorkTabelDB"].ConnectionString;
+
+            public List<Position> GetPositions()
+            {
+                var positions = new List<Position>();
+                try
+                {
+                    using (var connection = new MySqlConnection(_connectionString))
+                    {
+                        connection.Open();
+
+                        using (var command = new MySqlCommand("SELECT * FROM Positions", connection))
+                        {
+                            using (var reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        positions.Add(new Position
+                                        {
+                                            PositionID = reader.GetInt32(0),
+                                            PositionName = reader.GetString(1)
+                                        });
+                                    });
+                                }
+                            }
+                        }
+                        connection.Close();
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    // Обработка исключения
+                    MessageBox.Show("Не удалось подключиться к базе данных. Не удалось подключиться к таблице Positions. " + ex.Message);
+                }
+                return positions;
             }
         }
 
