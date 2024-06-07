@@ -78,16 +78,16 @@ namespace WorkTabel.ViewModels.Base
         }
 
         // Приватное поле для хранения коллекции  посещаемости
-        private ObservableCollection<Attendance> _attendance;
+        private ObservableCollection<Attendance> _attendances;
 
         // Публичное свойство для доступа к коллекции  посещаемости
-        public ObservableCollection<Attendance> Attendance
+        public ObservableCollection<Attendance> Attendances
         {
             // Получаем значение коллекции
-            get => _attendance;
+            get => _attendances;
 
             // Устанавливаем значение коллекции, используя метод Set для уведомления о изменении
-            set => Set(ref _attendance, value);
+            set => Set(ref _attendances, value);
         }
 
         // Приватное поле для хранения коллекции отделов
@@ -102,6 +102,30 @@ namespace WorkTabel.ViewModels.Base
             // Устанавливаем значение коллекции, используя метод Set для уведомления о изменении
             set => Set(ref _positions, value);
         }
+
+        //07
+        private Department _selectedDepartment;
+        public Department SelectedDepartment
+        {
+            get => _selectedDepartment;
+            set => Set(ref _selectedDepartment, value);
+        }
+
+        private int _selectedYear;
+        public int SelectedYear
+        {
+            get => _selectedYear;
+            set => Set(ref _selectedYear, value);
+        }
+
+        private int _selectedMonth;
+        public int SelectedMonth
+        {
+            get => _selectedMonth;
+            set => Set(ref _selectedMonth, value);
+        }
+        //-07
+
 
         // Приватное поле для хранения отфильтрованной коллекции сотрудников
         private ObservableCollection<Employee> _FilteredEmployeesByDepartment;
@@ -145,33 +169,9 @@ namespace WorkTabel.ViewModels.Base
         }
 
         // Свойство для хранения списка месяцев (необязательно класс)
-        private ObservableCollection<KeyValuePair<int, string>> _months;
-        public ObservableCollection<KeyValuePair<int, string>> Months
-        {
-            get
-            {
-                if (_months == null)
-                {
-                    _months = new ObservableCollection<KeyValuePair<int, string>>
-            {
-                        new KeyValuePair<int, string>(1, "Январь"),
-                        new KeyValuePair<int, string>(2, "Февраль"),
-                        new KeyValuePair<int, string>(3, "Март"),
-                        new KeyValuePair<int, string>(4, "Апрель"),
-                        new KeyValuePair<int, string>(5, "Май"),
-                        new KeyValuePair<int, string>(6, "Июнь"),
-                        new KeyValuePair<int, string>(7, "Июль"),
-                        new KeyValuePair<int, string>(8, "Август"),
-                        new KeyValuePair<int, string>(9, "Сентябрь"),
-                        new KeyValuePair<int, string>(10, "Октябрь"),
-                        new KeyValuePair<int, string>(11, "Ноябрь"),
-                        new KeyValuePair<int, string>(12, "Декабрь")
-            };
-                }
-                return _months;
-            }
-            set => Set(ref _months, value);
-        }
+        private ObservableCollection<int> _months;
+        public ObservableCollection<int> Months { get; set; } = new ObservableCollection<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+        
 
         // Свойство для хранения выбранного посещения
         private Attendance _selectedAttendance;
@@ -185,6 +185,12 @@ namespace WorkTabel.ViewModels.Base
 
         public System.Collections.IEnumerable FilterEmployeesAttendancesByDate { get => filterEmployeesAttendancesByDate; set => Set(ref filterEmployeesAttendancesByDate, value); }
 
+        private ObservableCollection<string> _columns;
+        public ObservableCollection<string> Columns
+        {
+            get => _columns;
+            set => Set(ref _columns, value);
+        }
 
 
     }

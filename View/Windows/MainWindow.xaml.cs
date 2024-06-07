@@ -27,14 +27,6 @@ namespace WorkTabel.View.Windows
 
         //    MessageBoxResult messageBoxResult = MessageBox.Show(productItem.FullName);
         //}
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
+        
     }
 }

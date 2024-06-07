@@ -63,7 +63,6 @@ namespace WorkTabel.Model.Data
                 }
                 return employees;
             }
-
             //редактирование сотр от насти!!!
             public void UpdateEmployee(Employee employee)
             {
@@ -234,7 +233,8 @@ namespace WorkTabel.Model.Data
         public class AttendanceDataAccess
         {
             private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WorkTabelDB"].ConnectionString;
-            public ObservableCollection<Attendance> GetAttendances()
+
+            public ObservableCollection<Attendance> GetAttendances(int departmentId, int year, int month)
             {
                 var attendances = new ObservableCollection<Attendance>();
                 try
@@ -242,8 +242,18 @@ namespace WorkTabel.Model.Data
                     using (var connection = new MySqlConnection(_connectionString))
                     {
                         connection.Open();
-                        using (var command = new MySqlCommand("SELECT *  FROM Attendance", connection))
+                        var query = @"
+                    SELECT a.AttendanceID, a.AttendanceDate, a.TimeIn, a.TimeOut, a.WorkedOut, a.EmployeeID, a.AttendanceTypeID
+                    FROM Attendance a
+                    JOIN Employees e ON a.EmployeeID = e.EmployeeID
+                    WHERE e.DepartmentID = @DepartmentID AND YEAR(a.AttendanceDate) = @Year AND MONTH(a.AttendanceDate) = @Month";
+
+                        using (var command = new MySqlCommand(query, connection))
                         {
+                            command.Parameters.AddWithValue("@DepartmentID", departmentId);
+                            command.Parameters.AddWithValue("@Year", year);
+                            command.Parameters.AddWithValue("@Month", month);
+
                             using (var reader = command.ExecuteReader())
                             {
                                 while (reader.Read())
@@ -254,18 +264,11 @@ namespace WorkTabel.Model.Data
                                         {
                                             AttendanceID = reader.GetInt32(0),
                                             AttendanceDate = reader.GetDateTime(1),
-                                            TimeIn = reader.GetDateTime(2),
-                                            TimeOut = reader.GetDateTime(3),
+                                            TimeIn = reader.IsDBNull(2) ? (DateTime?)null : reader.GetDateTime(2),
+                                            TimeOut = reader.IsDBNull(3) ? (DateTime?)null : reader.GetDateTime(3),
                                             WorkedOut = reader.GetInt32(4),
-                                            EmployeeID = new Employee
-                                            {
-                                                EmployeeID = reader.GetInt32(5),
-                                            },
-                                            AttendanceTypeID = new AttendanceType
-                                            {
-                                                AttendanceTypeID = reader.GetInt32(6),
-                                            }
-
+                                            EmployeeID = new Employee { EmployeeID = reader.GetInt32(5) },
+                                            AttendanceTypeID = new AttendanceType { AttendanceTypeID = reader.GetInt32(6) }
                                         });
                                     });
                                 }
@@ -274,15 +277,9 @@ namespace WorkTabel.Model.Data
                         connection.Close();
                     }
                 }
-                catch(MySqlException ex) 
+                catch (MySqlException ex)
                 {
-                    // Обработка исключения
                     MessageBox.Show("Не удалось подключиться к базе данных. Не удалось подключиться к таблице Attendance. " + ex.Message);
-
-                }
-                catch(Exception ex) 
-                {
-                    Console.WriteLine($"Непредвиденная ошибка: {ex.Message}");
                 }
                 return attendances;
             }

@@ -6,7 +6,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WorkTabel.ViewModels.Base;
 using System.Windows;
-using GalaSoft.MvvmLight.CommandWpf;
 using System.Configuration;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using WorkTabel.View.Windows;
@@ -18,6 +17,7 @@ using System.Windows.Data;
 using WorkTabel.Model.Data;
 using WorkTabel.Model.Turniket;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 
 namespace WorkTabel.ViewModels
 {
@@ -33,18 +33,23 @@ namespace WorkTabel.ViewModels
             Departments = new ObservableCollection<Department>(new DepartmentDataAccess().GetDepartments());
             Positions = new ObservableCollection<Position>(new PositionDataAccess().GetPositions());
             Employees = new ObservableCollection<Employee>(LoadEmployeesWithDepartPositions());
-            //Employees = new ObservableCollection<Employee>(new EmployeeDataAccess().GetEmployees());
             AttendanceTypes = new ObservableCollection<AttendanceType>(new AttendanceTypeDataAccess().GetAttendanceTypes());
-            Attendances = new ObservableCollection<Attendance>(new AttendanceDataAccess().GetAttendances());
+            //Attendances = new ObservableCollection<Attendance>(new AttendanceDataAccess().GetAttendances());
+            Years = new ObservableCollection<int>(Enumerable.Range(2000, DateTime.Now.Year - 1999));
+            Months = new ObservableCollection<int>(Enumerable.Range(1, 12));
+
 
             // Инициализируем отфильтрованную коллекцию сотрудников
             FilteredEmployeesByDepartment = new ObservableCollection<Employee>(Employees);
             // инициализация выбранного сотрудника
             FilteredEmployee = new ObservableCollection<Employee>();
             FilteredEmployeesAttendancesByDate = new ObservableCollection<Employee>();
-
+            // Инициализация столбцов
+            GenerateColumns();
             // Покажите окно авторизации
             ShowAuthorizationWindow();
+
+            LoadAttendanceCommand = new RelayCommand(LoadAttendance);
         }
 
         // Событие PropertyChanged, наследуемое от ViewModel
@@ -65,6 +70,7 @@ namespace WorkTabel.ViewModels
         public ObservableCollection<AttendanceType> AttendanceTypes { get; set; }
         // Коллекция записей о посещаемости
         public ObservableCollection<Attendance> Attendances { get; set; }
+
 
         //----------------------------------------------------------------
         private readonly EmployeeDataAccess _employeeDataAccess; //05
@@ -116,6 +122,7 @@ namespace WorkTabel.ViewModels
                 }
             }
         }
+        public ICommand LoadDataCommand { get; }
         public ICommand SaveCommand => new RelayCommand(SaveChanges);
 
         private void SaveChanges()
@@ -126,34 +133,46 @@ namespace WorkTabel.ViewModels
             }
         }
 
+        //06
+        private void GenerateColumns()
+        {
+            if (SelectedYear > 0 && SelectedMonth > 0)
+            {
+                var daysInMonth = DateTime.DaysInMonth(SelectedYear, SelectedMonth);
+                Columns = new ObservableCollection<string>();
+
+                for (int day = 1; day <= daysInMonth; day++)
+                {
+                    Columns.Add(day.ToString());
+                }
+
+                // Пересчитать данные после изменения столбцов
+                FilterEmployeesAttendancesByDate();
+            }
+        }
+
+        //-06
+
         // Свойство для хранения выбранного месяца
         private int _selectedMonth = DateTime.Now.Month;
         public int SelectedMonth
         {
-            // Получаем значение выбранного месяца
             get => _selectedMonth;
-
-            // Устанавливаем значение выбранного отдела, используя метод Set для уведомления об изменении
             set
             {
-                Set(ref _selectedMonth, value); // Используем метод Set из ViewModelBase
-                OnPropertyChanged("SelectedYearMonth");
-
+                Set(ref _selectedMonth, value);
+                GenerateColumns();
             }
         }
 
         private int _selectedYear = DateTime.Now.Year;
         public int SelectedYear
         {
-            // Получаем значение выбранного отдела
             get => _selectedYear;
-
-            // Устанавливаем значение выбранного отдела, используя метод Set для уведомления об изменении
             set
             {
-                Set(ref _selectedYear, value); // Используем метод Set из ViewModelBase
-                OnPropertyChanged("SelectedYearMonth");
-                
+                Set(ref _selectedYear, value);
+                GenerateColumns();
             }
         }
 
@@ -181,40 +200,29 @@ namespace WorkTabel.ViewModels
                 OnPropertyChanged(nameof(SelectedYearMonth)); // Уведомить о изменении свойства
             }
         }
-     
+
 
         private void FilterEmployeesAttendancesByDate()
         {
             FilterEmployeesByDepartment();
-            // Проверяем, выбран ли отдел
-
 
             FilteredEmployeesAttendancesByDate = new ObservableCollection<Employee>();
+
             foreach (Employee employee in FilteredEmployeesByDepartment)
             {
-
                 if (employee.Attendances != null)
                 {
                     ObservableCollection<Attendance> AttendancesByDate = new ObservableCollection<Attendance>(
-                       // Фильтруем коллекцию Employees, оставляя сотрудников, 
-                       // чей DepartmentID совпадает с DepartmentID выбранного отдела
-                       employee.Attendances.Where(e => e.AttendanceDate.Month == SelectedYearMonth.Month
+                       employee.Attendances.Where(e => e.AttendanceDate.Year == SelectedYear
+                                                       && e.AttendanceDate.Month == SelectedMonth)
+                    );
 
-                   ));
                     employee.Attendances = AttendancesByDate;
                     FilteredEmployeesAttendancesByDate.Add(employee);
-                    string str = " ";
-                    foreach (Attendance attendance in AttendancesByDate)
-                    {
-                        str += attendance.AttendanceDate;
-                        str += "\n";
-                    }
-                    MessageBox.Show(str);
-
                 }
-
             }
         }
+
 
         // конвертирпование DateTime в Date
         public class DateTimeToDateConverter : IValueConverter
@@ -352,6 +360,58 @@ namespace WorkTabel.ViewModels
 
         //---02
 
+        //07
+        // команда для загрузки данных
+        public RelayCommand LoadAttendanceCommand { get; }
+
+        private readonly AttendanceDataAccess _attendanceDataAccess = new AttendanceDataAccess();
+        private void LoadAttendance()
+        {
+            if (SelectedDepartment != null && SelectedYear != 0 && SelectedMonth != 0)
+            {
+                Attendances = _attendanceDataAccess.GetAttendances(SelectedDepartment.DepartmentID, SelectedYear, SelectedMonth);
+
+                foreach (var employee in Employees)
+                {
+                    employee.Attendances = new ObservableCollection<Attendance>(Attendances.Where(a => a.EmployeeID.EmployeeID == employee.EmployeeID));
+                }
+
+                // Вызов метода для создания динамических столбцов
+                GenerateDynamicColumns();
+            }
+        }
+        private void GenerateDynamicColumns()
+        {
+            var dataGrid = Application.Current.MainWindow.FindName("AttendanceDataGrid") as System.Windows.Controls.DataGrid;
+
+            if (dataGrid == null) return;
+
+            dataGrid.Columns.Clear();
+
+            dataGrid.Columns.Add(new DataGridTextColumn { Header = "ID", Binding = new Binding("EmployeeID"), Width = 50 });
+            dataGrid.Columns.Add(new DataGridTextColumn { Header = "ФИО", Binding = new Binding("FullName"), Width = 200 });
+
+            int daysInMonth = DateTime.DaysInMonth(SelectedYear, SelectedMonth);
+
+            for (int day = 1; day <= daysInMonth; day++)
+            {
+                var templateColumn = new DataGridTemplateColumn
+                {
+                    Header = day.ToString(),
+                    CellTemplate = new DataTemplate
+                    {
+                        VisualTree = new FrameworkElementFactory(typeof(TextBlock))
+                    }
+                };
+
+                templateColumn.CellTemplate.VisualTree.SetBinding(TextBlock.TextProperty, new Binding($"Attendances[{day - 1}].WorkedOut"));
+
+                dataGrid.Columns.Add(templateColumn);
+            }
+
+            dataGrid.Columns.Add(new DataGridTextColumn { Header = "Итого", Binding = new Binding("TotalWorkedOutTime"), Width = 100 });
+        }
+        //-07
 
 
         //  Новый метод для обновления отфильтрованных сотрудников

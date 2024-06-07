@@ -59,12 +59,14 @@
                                 <TextBlock Text="Табель" VerticalAlignment="Center" Margin="5,0,5,0" DockPanel.Dock="Left" Foreground="White"/>
                                 <ComboBox ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment}" DisplayMemberPath="DepartmentName" Margin="0,0,0,0" Width="232" BorderBrush="#7F000000" Foreground="#FF444444" Background="White" Height="30" FontSize="14"/>
                                 <ComboBox ItemsSource="{Binding Years}" SelectedItem="{Binding SelectedYear, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="30,0,0,0" BorderBrush="#7F000000" Foreground="#FF444444" Background="White" Height="30" FontSize="14"/>
-                                <ComboBox ItemsSource="{Binding Months}" DisplayMemberPath="Value" SelectedValuePath="Key" Width="150" Margin="20,0,0,0" BorderBrush="#7F000000" Foreground="#FF444444" Background="White" Height="30" FontSize="14"/>
-
+                                <ComboBox ItemsSource="{Binding Months}" SelectedItem="{Binding SelectedMonth}"  Width="150" Margin="20,0,0,0" BorderBrush="#7F000000" Foreground="#FF444444" Background="White" Height="30" FontSize="14"/>
+                                <Button Content="Загрузить" Command="{Binding LoadAttendanceCommand}" Width="87" Height="18" Margin="20,0,0,0" BorderBrush="#FF47549E" Padding="0,0,0,0"/>
                             </DockPanel>
                         </GroupBox.Header>
 
-                        <DataGrid Background="White" ItemsSource="{Binding Departments}" 
+                        <DataGrid Background="White" 
+                                  ItemsSource="{Binding FilteredEmployeesByDepartment}" 
+                                  x:Name="AttendanceDataGrid"
                                   AutoGenerateColumns="False" 
                                   HeadersVisibility="Column" 
                                   IsReadOnly="False" 
@@ -72,49 +74,33 @@
                                   GridLinesVisibility="All"
                                   Visibility="Visible"
                                   SelectionUnit="Cell"
+                                  
                                   >
-                            <DataGrid.Columns>
+                            <!--<DataGrid.Columns>
                                 <DataGridTextColumn  Header="ID" Binding="{Binding AttendanceID}" Width="46" IsReadOnly="True" />
                                 <DataGridTextColumn Header="ФИО" Binding="{Binding EmployeeID.FullName}" Width="50*" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="1" Binding="{Binding WorkedTime[0], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="2" Binding="{Binding WorkedTime[1], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="3" Binding="{Binding WorkedTime[2], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="4" Binding="{Binding WorkedTime[3], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="5" Binding="{Binding WorkedTime[4], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="6" Binding="{Binding WorkedTime[5], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="7" Binding="{Binding WorkedTime[6], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="8" Binding="{Binding WorkedTime[7], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="9" Binding="{Binding WorkedTime[8], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="10" Binding="{Binding WorkedTime[9], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="11" Binding="{Binding WorkedTime[10], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="12" Binding="{Binding WorkedTime[11], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="13" Binding="{Binding WorkedTime[12], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="14" Binding="{Binding WorkedTime[13], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="15" Binding="{Binding WorkedTime[14], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="16" Binding="{Binding WorkedTime[15], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="17" Binding="{Binding WorkedTime[16], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="18" Binding="{Binding WorkedTime[17], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="19" Binding="{Binding WorkedTime[18], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="20" Binding="{Binding WorkedTime[19], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="21" Binding="{Binding WorkedTime[20], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="22" Binding="{Binding WorkedTime[21], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="23" Binding="{Binding WorkedTime[22], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="24" Binding="{Binding WorkedTime[23], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="25" Binding="{Binding WorkedTime[24], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="26" Binding="{Binding WorkedTime[25], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="27" Binding="{Binding WorkedTime[26], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="28" Binding="{Binding WorkedTime[27], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="29" Binding="{Binding WorkedTime[28], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="30" Binding="{Binding WorkedTime[29], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="31" Binding="{Binding WorkedTime[30], StringFormat=hh\:mm}" Width="Auto" />
-                                <DataGridTextColumn Header="Итого" Binding="{Binding WorkedOut}" Width="10*"/>
-                            </DataGrid.Columns>
+                                <DataGridTemplateColumn Header="1">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Attendances[0].WorkedOut}" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTemplateColumn Header="Итого">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding TotalWorkedHours}" />
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>-->
                         </DataGrid>
                     </GroupBox>
                 </Grid>
             </TabItem>
 
             <TabItem Header="Сотрудники" HorizontalAlignment="Left" Padding="0,0,0,0" Height="25">
+
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="450"/>
@@ -139,7 +125,8 @@
 
                         </DataGrid>
                     </GroupBox>
-                    <GroupBox Grid.Column="2" Header="Информация" FontSize="16" BorderBrush="White">
+                    <Button Content="Сохранить изменения" Command="{Binding SaveCommand}" Margin="0,-33,9,0" FontSize="11" HorizontalAlignment="Right" Width="151" Height="28" VerticalAlignment="Top" Grid.Column="2" />
+                    <GroupBox Grid.Column="2" Header="Информация" FontSize="16" BorderBrush="White" >
                         <DataGrid ItemsSource="{Binding FilteredEmployee}" SelectedItem="" SelectionMode="Single" SelectionUnit="Cell" AutoGenerateColumns="False" RowHeight="1500" Background="White" FontSize="15" RenderTransformOrigin="0.5,0.5">
 
                             <DataGrid.Resources>
@@ -237,7 +224,7 @@
                 <ProgressBar Width="98" Height="14" Value="30"/>
             </StatusBarItem>
         </StatusBar>
-        <Button Content="Сохранить изменения" Command="{Binding SaveCommand}" Margin="0,20,10,0" FontSize="8" HorizontalAlignment="Right" Width="122" Height="32" VerticalAlignment="Top" />
+        <!--<Button Content="Сохранить изменения" Command="{Binding SaveCommand}" Margin="0,20,10,0" FontSize="8" HorizontalAlignment="Right" Width="122" Height="32" VerticalAlignment="Top" />-->
 
 
     </Grid>

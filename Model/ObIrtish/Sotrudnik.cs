@@ -85,21 +85,7 @@ namespace WorkTabel.Model.ObIrtish
         public AttendanceType? AttendanceTypeID { get; set; }
         public List<int?> WorkedTime { get; set; } = new List<int?>();
         public int WorkedOut {  get; set; }
-        //{
-        //    get
-        //    {
-        //        if (WorkedOut.HasValue)
-        //            return WorkedOut.Value;
-        //        else
-        //        {
-        //            if (TimeIn.HasValue && TimeOut.HasValue)
-        //                return TimeOut.Value - TimeIn.Value;
-        //            else
-        //                return null;
-        //        }
-        //    }
-        //    set { }            
-        //}
+                
         public event PropertyChangedEventHandler? PropertyChanged;
         // Метод для уведомления о изменениях свойств
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

@@ -9,13 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="c1.wpf.grid" Version="7.0.20233.662" />
-    <PackageReference Include="C1.Xaml.WPF.FlexGrid" Version="4.6.20241.839" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="linq2db" Version="5.4.1" />
     <PackageReference Include="MaterialDesignColors" Version="3.0.0" />
     <PackageReference Include="MaterialDesignThemes" Version="5.0.0" />
-    <PackageReference Include="MvvmLightLibs" Version="5.4.1.1" />
     <PackageReference Include="MySql.Data" Version="8.4.0" />
     <PackageReference Include="MySql.Data.EntityFramework" Version="8.4.0" />
     <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.2" />
