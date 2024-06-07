@@ -83,9 +83,11 @@ namespace WorkTabel.Model.ObIrtish
         public DateTime? TimeOut { get; set; }
         public Employee EmployeeID { get; set; }
         public AttendanceType? AttendanceTypeID { get; set; }
+        public AttendanceType? AttendanceType { get; set; }
         public List<int?> WorkedTime { get; set; } = new List<int?>();
         public int WorkedOut {  get; set; }
-                
+        public string DisplayWorkedOut => $"{WorkedOut:F2} ({AttendanceType?.Abbreviation ?? ""})";
+
         public event PropertyChangedEventHandler? PropertyChanged;
         // Метод для уведомления о изменениях свойств
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

@@ -283,7 +283,9 @@ namespace WorkTabel.Model.Data
                 }
                 return attendances;
             }
+
         }
+
 
         // делаем запись в таблицу Attendance
         public static void SaveAttendances(List<Attendance> attendances)
@@ -297,18 +299,15 @@ namespace WorkTabel.Model.Data
                     {
                         foreach (var attendance in attendances)
                         {
-                            // Сохраняем данные для каждого дня
-                            for (int i = 0; i < attendance.WorkedTime.Count; i++)
+                            using (var command = new MySqlCommand("INSERT INTO Attendance (AttendanceDate, EmployeeID, AttendanceTypeID, TimeIn, TimeOut, WorkedOut) VALUES (@AttendanceDate, @EmployeeID, @AttendanceTypeID, @TimeIn, @TimeOut, @WorkedOut)", connection))
                             {
-                                using (var command = new MySqlCommand("INSERT INTO Attendance (Date, EmployeeID, AttendanceTypeID, WorkedOut) VALUES (@Date, @EmployeeID, @AttendanceTypeID, @WorkedOut)", connection))
-                                {
-                                    command.Parameters.AddWithValue("@Date", attendance.AttendanceDate.AddDays(i));
-                                    command.Parameters.AddWithValue("@EmployeeID", attendance.EmployeeID.EmployeeID);
-                                    command.Parameters.AddWithValue("@AttendanceTypeID", attendance.AttendanceTypeID.AttendanceTypeID);
-                                    // Используйте WorkedTime[i] для записи отработанного времени для каждого дня
-                                    command.Parameters.AddWithValue("@WorkedOut", attendance.WorkedTime[i]);
-                                    command.ExecuteNonQuery();
-                                }
+                                command.Parameters.AddWithValue("@AttendanceDate", attendance.AttendanceDate);
+                                command.Parameters.AddWithValue("@EmployeeID", attendance.EmployeeID);
+                                command.Parameters.AddWithValue("@AttendanceTypeID", attendance.AttendanceTypeID);
+                                command.Parameters.AddWithValue("@TimeIn", attendance.TimeIn);
+                                command.Parameters.AddWithValue("@TimeOut", attendance.TimeOut);
+                                command.Parameters.AddWithValue("@WorkedOut", attendance.WorkedOut);
+                                command.ExecuteNonQuery();
                             }
                         }
                         transaction.Commit();
@@ -323,6 +322,7 @@ namespace WorkTabel.Model.Data
                 connection.Close();
             }
         }
+
 
     }
 }

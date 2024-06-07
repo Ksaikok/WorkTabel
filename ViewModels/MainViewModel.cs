@@ -339,26 +339,7 @@ namespace WorkTabel.ViewModels
         }
 
        
-        //02 
-        private RelayCommand _generateAttendancesCommand;
-        public RelayCommand GenerateAttendancesCommand => _generateAttendancesCommand ?? (_generateAttendancesCommand = new RelayCommand(GenerateAttendances));
-
-        private void GenerateAttendances()
-        {
-            // 1. Получите выбранный отдел, год и месяц из MainViewModel
-            var department = SelectedDepartment;
-            var year = SelectedYear;
-            var month = SelectedMonth;
-
-            // 2. Генерируйте посещения
-            var generatedAttendances = TurnikSim.GenerateAttendances(year, month, department, AttendanceTypes.ToList());
-
-            // 3. Запишите сгенерированные посещения в базу данных
-            //    (используйте DataAccess)
-           // DataAccess.SaveAttendances(generatedAttendances);
-        }
-
-        //---02
+        
 
         //07
         // команда для загрузки данных
@@ -389,7 +370,7 @@ namespace WorkTabel.ViewModels
             dataGrid.Columns.Clear();
 
             dataGrid.Columns.Add(new DataGridTextColumn { Header = "ID", Binding = new Binding("EmployeeID"), Width = 50 });
-            dataGrid.Columns.Add(new DataGridTextColumn { Header = "ФИО", Binding = new Binding("FullName"), Width = 200 });
+            dataGrid.Columns.Add(new DataGridTextColumn { Header = "ФИО", Binding = new Binding("FullName"), Width = 250 });
 
             int daysInMonth = DateTime.DaysInMonth(SelectedYear, SelectedMonth);
 
@@ -404,7 +385,7 @@ namespace WorkTabel.ViewModels
                     }
                 };
 
-                templateColumn.CellTemplate.VisualTree.SetBinding(TextBlock.TextProperty, new Binding($"Attendances[{day - 1}].WorkedOut"));
+                templateColumn.CellTemplate.VisualTree.SetBinding(TextBlock.TextProperty, new Binding($"Attendances[{day - 1}].DisplayWorkedOut"));
 
                 dataGrid.Columns.Add(templateColumn);
             }

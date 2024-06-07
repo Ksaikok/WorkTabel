@@ -11,48 +11,53 @@ namespace WorkTabel.Model.Turniket
 {
     public class TurnikSim
     {
-        // Метод для генерации посещений
-        public static List<Attendance> GenerateAttendances(int year, int month, Department department, List<AttendanceType> attendanceTypes)
+        private Random _random = new Random();
+
+        public List<Attendance> GenerateAttendances(int departmentID, int year, int month, List<Employee> employees)
         {
-            // 1. Получить список сотрудников из выбранного отдела
-            var turEmployeeDataAccess = new EmployeeDataAccess(); // Создайте экземпляр
-            var turEmployees = turEmployeeDataAccess.GetEmployees().Where(e => e.DepartmentID.DepartmentID == department.DepartmentID).ToList();
-            // 2. Создать список посещений
             var attendances = new List<Attendance>();
-            foreach (var turEmployee in turEmployees)
+            int daysInMonth = DateTime.DaysInMonth(year, month);
+
+            foreach (var employee in employees)
             {
-                // 3. Генерировать случайные даты для посещений
-                var random = new Random();
-                var daysInMonth = DateTime.DaysInMonth(year, month);
-                for (int i = 1; i <= daysInMonth; i++)
+                for (int day = 1; day <= daysInMonth; day++)
                 {
-                    // 4. Проверить, нужно ли генерировать посещение для этого дня
-                    //    (например, с вероятностью 80% для рабочего дня)
-                    if (random.Next(100) < 80)
+                    var attendanceDate = new DateTime(year, month, day);
+                    var attendanceTypeID = GenerateAttendanceType();
+                    var timeIn = GenerateTimeIn();
+                    var timeOut = GenerateTimeOut(timeIn);
+
+                    attendances.Add(new Attendance
                     {
-                        // 5. Создать посещение
-                        var attendance = new Attendance
-                        {
-                            AttendanceDate = new DateTime(year, month, i),
-                            EmployeeID = turEmployee,
-                            AttendanceTypeID = attendanceTypes[random.Next(attendanceTypes.Count)],
-                            WorkedTime = Enumerable.Range(1, DateTime.DaysInMonth(year, month)).Select(day => (int?)random.Next(300, 600)).ToList()
-                        };// Случайное значение от 300 до 600 минут
-
-                        // 6. Генерировать случайное время входа и выхода
-                        //    (обратите внимание на ограничения по времени для каждого типа посещения)
-                        attendance.TimeIn = new DateTime(year, month, i).Date + new TimeSpan(random.Next(7, 10), random.Next(0, 59), 0);
-                        attendance.TimeOut = attendance.TimeIn.Value.Date + new TimeSpan(random.Next(16, 17), random.Next(0, 59), 0);
-                        // Рассчитываем отработанное время
-                        attendance.WorkedTime.Add(random.Next(300, 600)); // Случайное значение от 300 до 600 минут
-
-                        // 7. Добавить посещение в список
-                        attendances.Add(attendance);
-                    }
+                        AttendanceDate = attendanceDate,
+                        TimeIn = timeIn,
+                        TimeOut = timeOut,
+                        WorkedOut = (int)(timeOut - timeIn).TotalHours,
+                        EmployeeID = employee.EmployeeID,
+                        AttendanceTypeID = attendanceTypeID
+                    });
                 }
             }
 
             return attendances;
+        }
+
+        private int GenerateAttendanceType()
+        {
+            // Example: 1 - Явка, 2 - Неявка, 3 - Больничные и т.д.
+            return _random.Next(1, 4);
+        }
+
+        private DateTime GenerateTimeIn()
+        {
+            // Example: employees arrive between 8:00 and 10:00
+            return DateTime.Today.AddHours(8).AddMinutes(_random.Next(0, 120));
+        }
+
+        private DateTime GenerateTimeOut(DateTime timeIn)
+        {
+            // Example: employees leave between 16:00 and 18:00
+            return timeIn.AddHours(8).AddMinutes(_random.Next(0, 120));
         }
     }
 

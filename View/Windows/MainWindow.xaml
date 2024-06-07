@@ -31,7 +31,7 @@
             <MenuItem Header="Файл" ClipToBounds="True" Height="40">
                 <MenuItem Header="Сохранить"/>
                 <MenuItem Header="Переподключиться" Command="{Binding ReconnectCommand}"/>
-                <MenuItem Header="Генерировать посещения" Command="{Binding GenerateAttendancesCommand}"/>
+                <MenuItem Header="Генерировать посещения" Command="{Binding GenerateAttendanceCommand}"/>
                 <MenuItem Header="Выход"/>
             </MenuItem>
 
