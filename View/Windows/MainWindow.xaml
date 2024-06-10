@@ -6,7 +6,7 @@
         xmlns:base="clr-namespace:WorkTabel.ViewModels.Base"
         xmlns:local="clr-namespace:WorkTabel.ViewModels"        
         xmlns:c1="http://schemas.componentone.com/winfx/2006/xaml" x:Class="WorkTabel.View.Windows.MainWindow"
-        d:DataContext="{d:DesignInstance Type={x:Type base:ViewModel}}"        
+        d:DataContext="{d:DesignInstance Type={x:Type local:MainViewModel}}"        
         mc:Ignorable="d"
         Title="Табель" Height="900" Width="1600" Background="#FF6181D0" WindowState="Maximized">
     <Window.DataContext>
@@ -28,20 +28,13 @@
         </Grid.RowDefinitions>
         <Menu VerticalAlignment="Top" FontSize="14" Height="40" Background="#00000000">
 
-            <MenuItem Header="Файл" ClipToBounds="True" Height="40">
-                <MenuItem Header="Сохранить"/>
-                <MenuItem Header="Переподключиться" Command="{Binding ReconnectCommand}"/>
-                <MenuItem Header="Генерировать посещения" Command="{Binding GenerateAttendanceCommand}"/>
-                <MenuItem Header="Выход"/>
-            </MenuItem>
-
             <MenuItem Header="Экспорт" Height="40">
                 <!--<MenuItem Header="Ecxel Форма T-12"/>-->
-                <MenuItem Header="Word Форма T-12"/>
+                <MenuItem Header="Word Форма T-12" Command="{Binding GenerateReportCommand}"/>
             </MenuItem>
 
             <MenuItem Header="Помощь" Height="40">
-                <MenuItem Header="О программе"/>
+                <MenuItem Header="О программе" Command="{Binding ShowAboutCommand}"/>                
             </MenuItem>
 
         </Menu>
@@ -60,7 +53,8 @@
                                 <ComboBox ItemsSource="{Binding Departments}" SelectedItem="{Binding SelectedDepartment}" DisplayMemberPath="DepartmentName" Margin="0,0,0,0" Width="232" BorderBrush="#7F000000" Foreground="#FF444444" Background="White" Height="30" FontSize="14"/>
                                 <ComboBox ItemsSource="{Binding Years}" SelectedItem="{Binding SelectedYear, UpdateSourceTrigger=PropertyChanged}" Width="150" Margin="30,0,0,0" BorderBrush="#7F000000" Foreground="#FF444444" Background="White" Height="30" FontSize="14"/>
                                 <ComboBox ItemsSource="{Binding Months}" SelectedItem="{Binding SelectedMonth}"  Width="150" Margin="20,0,0,0" BorderBrush="#7F000000" Foreground="#FF444444" Background="White" Height="30" FontSize="14"/>
-                                <Button Content="Загрузить" Command="{Binding LoadAttendanceCommand}" Width="87" Height="18" Margin="20,0,0,0" BorderBrush="#FF47549E" Padding="0,0,0,0"/>
+                                <Button Content="Загрузить" Command="{Binding LoadAttendanceCommand}" Width="87" Height="18" Margin="20,0,0,0" BorderBrush="#7F000000" Padding="0,0,0,0"/>
+                                <Button Content="Generate" Command="{Binding GenerateAttendanceCommand}" Width="87" Height="18" Margin="20,0,0,0" BorderBrush="#7F000000" Padding="0,0,0,0"/>
                             </DockPanel>
                         </GroupBox.Header>
 
@@ -69,7 +63,7 @@
                                   x:Name="AttendanceDataGrid"
                                   AutoGenerateColumns="False" 
                                   HeadersVisibility="Column" 
-                                  IsReadOnly="False" 
+                                  IsReadOnly = "False" 
                                   FontSize="12"
                                   GridLinesVisibility="All"
                                   Visibility="Visible"
@@ -113,9 +107,18 @@
                     <GroupBox Grid.Column="1" FontSize="16">
                         <GroupBox.Header>
                             <DockPanel LastChildFill="False">
-                                <TextBlock Text="Сотрудники" VerticalAlignment="Center" Margin="5,0,5,0" DockPanel.Dock="Left" Foreground="White"/>
-                                <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Padding="5,0" DockPanel.Dock="Right" Height="19" Width="138" FontSize="13" FontWeight="Normal" Background="#FF3F51B5" Foreground="White" BorderBrush="White" RenderTransformOrigin="0.5,0.5"/>
-                                <!--<Button Content="Показать всех" Command="{Binding ShowAllEmployeesCommand}" Padding="5,0" DockPanel.Dock="Right" Height="16" Width="102" FontSize="13" FontWeight="Normal" />-->
+                                <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Padding="5,0" DockPanel.Dock="Right" Height="19" Width="138" FontSize="15" FontWeight="Normal" Background="#FF3F51B5" Foreground="White" BorderBrush="White" RenderTransformOrigin="0.5,0.5" TextChanged="TextBox_TextChanged_1"/>
+                                <TextBlock DockPanel.Dock="Right" TextWrapping="Wrap" Text="Поиск:" VerticalAlignment="Top" Foreground="White"/>
+                                <Button Content="Сотрудники" Command="{Binding ResetFilterCommand}" Padding="5,0" DockPanel.Dock="Left" Height="20" Width="102" FontSize="16" FontWeight="Normal" Background="#FF3F51B5" Cursor="Hand" BorderBrush="#FF3F51B5" BorderThickness="1,0,1,1">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="{x:Type Button}">
+                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                                
                             </DockPanel>
                         </GroupBox.Header>
                         <DataGrid Background="White" ItemsSource="{Binding FilteredEmployeesByDepartment}" SelectedItem="{Binding SelectedEmployee}" DisplayMemberPath="FullName" AutoGenerateColumns="False" HeadersVisibility="None" IsReadOnly="True" FontSize="15">
@@ -125,7 +128,9 @@
 
                         </DataGrid>
                     </GroupBox>
-                    <Button Content="Сохранить изменения" Command="{Binding SaveCommand}" Margin="0,-33,9,0" FontSize="11" HorizontalAlignment="Right" Width="151" Height="28" VerticalAlignment="Top" Grid.Column="2" />
+                    <Button Content="Добавить" Command="{Binding OpenAddEmployeeWindowCommand}" Margin="0,-33,240,0" FontSize="13" HorizontalAlignment="Right" Width="70" Height="28" VerticalAlignment="Top" Grid.Column="2" BorderThickness="0,0,0,0" Padding="5,4,5,4" Background="#FF3F51B5" BorderBrush="#FF5060BB" Foreground="White"/>
+                    <Button Content="Удалить" Command="{Binding DeleteEmployeeCommand}" Margin="0,-33,165,0" FontSize="13" HorizontalAlignment="Right" Width="70" Height="28" VerticalAlignment="Top" Grid.Column="2" BorderThickness="0,0,0,0" Padding="5,4,5,4" Background="#FF3F51B5" BorderBrush="#FF5060BB" Foreground="White"/>
+                    <Button Content="Сохранить изменения" Command="{Binding SaveCommand}" Margin="0,-33,9,0" FontSize="13" HorizontalAlignment="Right" Width="151" Height="28" VerticalAlignment="Top" Grid.Column="2" BorderThickness="0,0,0,0" Padding="5,4,5,4" Background="#FF3F51B5" BorderBrush="#FF5060BB" Foreground="White"/>
                     <GroupBox Grid.Column="2" Header="Информация" FontSize="16" BorderBrush="White" >
                         <DataGrid ItemsSource="{Binding FilteredEmployee}" SelectedItem="" SelectionMode="Single" SelectionUnit="Cell" AutoGenerateColumns="False" RowHeight="1500" Background="White" FontSize="15" RenderTransformOrigin="0.5,0.5">
 

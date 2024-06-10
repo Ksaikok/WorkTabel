@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using WorkTabel.Model.Data;
+using WorkTabel.DataAccessLayer.Data;
 using WorkTabel.Model.ObIrtish;
 using static WorkTabel.ViewModels.MainViewModel;
 
@@ -191,6 +191,7 @@ namespace WorkTabel.ViewModels.Base
             get => _columns;
             set => Set(ref _columns, value);
         }
+
 
 
     }

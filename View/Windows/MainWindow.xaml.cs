@@ -20,13 +20,20 @@ namespace WorkTabel.View.Windows
     /// </summary>
     public partial class MainWindow : Window
     {
-        //private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //{
-        //    System.Windows.Controls.DataGrid myDataGrid = (System.Windows.Controls.DataGrid)sender;
-        //    Employee productItem = (Employee)myDataGrid.SelectedItem; //Datagrid bound with ProductItem 
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
 
-        //    MessageBoxResult messageBoxResult = MessageBox.Show(productItem.FullName);
-        //}
-        
+        }
+
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void TextBox_TextChanged_1(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
     }
 }

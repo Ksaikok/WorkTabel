@@ -4,17 +4,19 @@ using MySqlConnector;
 using System.Collections.ObjectModel;
 using System.Windows;
 
-namespace WorkTabel.Model.Data
+namespace WorkTabel.DataAccessLayer.Data
 {
     //слой допуска к данным. считываем данные из бд и записываем их в класс переменной в Model/ObIrtish/Sotrudnik.cs
-    // подключение к БД прописано в app.config
     public class DataAccess
     {
-        //загрузка инфы о сотрудниках
-        public class EmployeeDataAccess
+        internal T ExecuteScalar<T>(string query, Dictionary<string, object> parameters)
+        {
+            throw new NotImplementedException();
+        }
+
+        public class EmployeeDataAccess //загрузка инфы о сотрудниках
         {
             private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WorkTabelDB"].ConnectionString;
-
             public ObservableCollection<Employee> GetEmployees()
             {
                 var employees = new ObservableCollection<Employee>();
@@ -30,7 +32,7 @@ namespace WorkTabel.Model.Data
                             {
                                 while (reader.Read())
                                 {
-                                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                    Application.Current.Dispatcher.Invoke(() =>
                                     {
                                         employees.Add(new Employee
                                         {
@@ -63,7 +65,6 @@ namespace WorkTabel.Model.Data
                 }
                 return employees;
             }
-            //редактирование сотр от насти!!!
             public void UpdateEmployee(Employee employee)
             {
                 try
@@ -71,7 +72,10 @@ namespace WorkTabel.Model.Data
                     using (var connection = new MySqlConnection(_connectionString))
                     {
                         connection.Open();
-                        var query = "UPDATE Employees SET FullName = @FullName, TabelNum = @TabelNum, PositionID = @PositionID, DepartmentID = @DepartmentID, PhoneNumber = @PhoneNumber, Email = @Email, Birthday = @Birthday WHERE EmployeeID = @EmployeeID";
+                        var query = "UPDATE Employees SET FullName = @FullName," +
+                            " TabelNum = @TabelNum, PositionID = @PositionID, " +
+                            "DepartmentID = @DepartmentID, PhoneNumber = @PhoneNumber, " +
+                            "Email = @Email, Birthday = @Birthday WHERE EmployeeID = @EmployeeID";
                         using (var command = new MySqlCommand(query, connection))
                         {
                             command.Parameters.AddWithValue("@EmployeeID", employee.EmployeeID);
@@ -98,16 +102,13 @@ namespace WorkTabel.Model.Data
         // загрузка инфы о отделах
         public class DepartmentDataAccess
         {
-           
             private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WorkTabelDB"].ConnectionString;
-
 
             public List<Department> GetDepartments()
             {
                 var departments = new List<Department>();
                 try
                 {
-
                     using (var connection = new MySqlConnection(_connectionString))
                     {
                         connection.Open();
@@ -118,7 +119,7 @@ namespace WorkTabel.Model.Data
                             {
                                 while (reader.Read())
                                 {
-                                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                    Application.Current.Dispatcher.Invoke(() =>
                                     {
                                         departments.Add(new Department
                                         {
@@ -144,7 +145,6 @@ namespace WorkTabel.Model.Data
         public class PositionDataAccess
         {
             private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WorkTabelDB"].ConnectionString;
-
             public List<Position> GetPositions()
             {
                 var positions = new List<Position>();
@@ -160,7 +160,7 @@ namespace WorkTabel.Model.Data
                             {
                                 while (reader.Read())
                                 {
-                                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                    Application.Current.Dispatcher.Invoke(() =>
                                     {
                                         positions.Add(new Position
                                         {
@@ -186,9 +186,7 @@ namespace WorkTabel.Model.Data
         // инфа о типах посещения (в табелях тип посещения проставляется определённой буквой, каждая имеет свою расшифровку)
         public class AttendanceTypeDataAccess
         {
-
             private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WorkTabelDB"].ConnectionString;
-
             public ObservableCollection<AttendanceType> GetAttendanceTypes()
             {
                 var attendanceTypes = new ObservableCollection<AttendanceType>();
@@ -205,7 +203,7 @@ namespace WorkTabel.Model.Data
                             {
                                 while (reader.Read())
                                 {
-                                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                    Application.Current.Dispatcher.Invoke(() =>
                                     {
                                         attendanceTypes.Add(new AttendanceType
                                         {
@@ -228,10 +226,59 @@ namespace WorkTabel.Model.Data
                 return attendanceTypes;
             }
         }
-
         // инфа о посещении (кто когда и сколько отработал)
         public class AttendanceDataAccess
         {
+            public void SaveAttendances(List<Attendance> attendances)
+            {
+                using (var connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["WorkTabelDB"].ConnectionString))
+                {
+                    connection.Open();
+                    using (var transaction = connection.BeginTransaction())
+                    {
+                        try
+                        {
+                            foreach (var attendance in attendances)
+                            {
+                                try
+                                {
+                                    using (var command = new MySqlCommand("INSERT INTO Attendance (AttendanceDate, EmployeeID, AttendanceTypeID, TimeIn, TimeOut, WorkedOut) VALUES (@AttendanceDate, @EmployeeID, @AttendanceTypeID, @TimeIn, @TimeOut, @WorkedOut)", connection))
+                                    {
+                                        command.Parameters.AddWithValue("@AttendanceDate", attendance.AttendanceDate);
+                                        command.Parameters.AddWithValue("@TimeIn", attendance.TimeIn ?? (object)DBNull.Value);
+                                        command.Parameters.AddWithValue("@TimeOut", attendance.TimeOut ?? (object)DBNull.Value);
+                                        command.Parameters.AddWithValue("@WorkedOut", attendance.WorkedOut);
+                                        command.Parameters.AddWithValue("@EmployeeID", attendance.EmployeeID.EmployeeID);
+                                        command.Parameters.AddWithValue("@AttendanceTypeID", attendance.AttendanceTypeID?.AttendanceTypeID ?? (object)DBNull.Value);
+
+                                        // Логирование параметров перед выполнением команды
+                                        Console.WriteLine($"AttendanceDate: {attendance.AttendanceDate}, TimeIn: {attendance.TimeIn}, TimeOut: {attendance.TimeOut}, WorkedOut: {attendance.WorkedOut}, EmployeeID: {attendance.EmployeeID.EmployeeID}, AttendanceTypeID: {attendance.AttendanceTypeID?.AttendanceTypeID}");
+
+                                        command.ExecuteNonQuery();
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    // Логирование исключения для отдельной записи
+                                    Console.WriteLine($"Ошибка при выполнении команды для EmployeeID: {attendance.EmployeeID.EmployeeID}, Error: {ex.Message}");
+                                    // Прервать выполнение транзакции, если требуется
+                                    transaction.Rollback();
+                                    return;
+                                }
+                            }
+                            transaction.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            // Логирование исключения транзакции
+                            Console.WriteLine($"Ошибка при выполнении транзакции: {ex.Message}");
+                            transaction.Rollback();
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+
             private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WorkTabelDB"].ConnectionString;
 
             public ObservableCollection<Attendance> GetAttendances(int departmentId, int year, int month)
@@ -243,10 +290,10 @@ namespace WorkTabel.Model.Data
                     {
                         connection.Open();
                         var query = @"
-                    SELECT a.AttendanceID, a.AttendanceDate, a.TimeIn, a.TimeOut, a.WorkedOut, a.EmployeeID, a.AttendanceTypeID
-                    FROM Attendance a
-                    JOIN Employees e ON a.EmployeeID = e.EmployeeID
-                    WHERE e.DepartmentID = @DepartmentID AND YEAR(a.AttendanceDate) = @Year AND MONTH(a.AttendanceDate) = @Month";
+                SELECT a.AttendanceID, a.AttendanceDate, a.TimeIn, a.TimeOut, a.WorkedOut, a.EmployeeID, a.AttendanceTypeID
+                FROM Attendance a
+                JOIN Employees e ON a.EmployeeID = e.EmployeeID
+                WHERE e.DepartmentID = @DepartmentID AND YEAR(a.AttendanceDate) = @Year AND MONTH(a.AttendanceDate) = @Month";
 
                         using (var command = new MySqlCommand(query, connection))
                         {
@@ -258,7 +305,7 @@ namespace WorkTabel.Model.Data
                             {
                                 while (reader.Read())
                                 {
-                                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                                    Application.Current.Dispatcher.Invoke(() =>
                                     {
                                         attendances.Add(new Attendance
                                         {
@@ -283,46 +330,73 @@ namespace WorkTabel.Model.Data
                 }
                 return attendances;
             }
-
         }
 
-
-        // делаем запись в таблицу Attendance
-        public static void SaveAttendances(List<Attendance> attendances)
+        //10
+        public class AddEmpDataAccess
         {
-            using (var connection = new MySqlConnection(ConfigurationManager.ConnectionStrings["WorkTabelDB"].ConnectionString))
+            private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WorkTabelDB"].ConnectionString;
+
+            public bool AddEmployee(Employee employee)
             {
-                connection.Open();
-                using (var transaction = connection.BeginTransaction())
+                try
                 {
-                    try
+                    using (var connection = new MySqlConnection(_connectionString))
                     {
-                        foreach (var attendance in attendances)
+                        connection.Open();
+
+                        using (var command = new MySqlCommand("INSERT INTO Employees (FullName, TabelNum, PositionID, DepartmentID, PhoneNumber, Email, Birthday) VALUES (@FullName, @TabelNum, @PositionID, @DepartmentID, @PhoneNumber, @Email, @Birthday)", connection))
                         {
-                            using (var command = new MySqlCommand("INSERT INTO Attendance (AttendanceDate, EmployeeID, AttendanceTypeID, TimeIn, TimeOut, WorkedOut) VALUES (@AttendanceDate, @EmployeeID, @AttendanceTypeID, @TimeIn, @TimeOut, @WorkedOut)", connection))
-                            {
-                                command.Parameters.AddWithValue("@AttendanceDate", attendance.AttendanceDate);
-                                command.Parameters.AddWithValue("@EmployeeID", attendance.EmployeeID);
-                                command.Parameters.AddWithValue("@AttendanceTypeID", attendance.AttendanceTypeID);
-                                command.Parameters.AddWithValue("@TimeIn", attendance.TimeIn);
-                                command.Parameters.AddWithValue("@TimeOut", attendance.TimeOut);
-                                command.Parameters.AddWithValue("@WorkedOut", attendance.WorkedOut);
-                                command.ExecuteNonQuery();
-                            }
+                            command.Parameters.AddWithValue("@FullName", employee.FullName);
+                            command.Parameters.AddWithValue("@TabelNum", employee.TabelNum);
+                            command.Parameters.AddWithValue("@PositionID", employee.PositionID.PositionID); // Используем PositionID из объекта Position
+                            command.Parameters.AddWithValue("@DepartmentID", employee.DepartmentID.DepartmentID); // Используем DepartmentID из объекта Department
+                            command.Parameters.AddWithValue("@PhoneNumber", employee.PhoneNumber);
+                            command.Parameters.AddWithValue("@Email", employee.Email);
+                            command.Parameters.AddWithValue("@Birthday", employee.Birthday);
+
+                            command.ExecuteNonQuery();
+                            return true;
                         }
-                        transaction.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                        // Обработайте ошибку
-                        Console.WriteLine($"Ошибка записи в базу данных: {ex.Message}");
                     }
                 }
-                connection.Close();
+                catch (MySqlException ex)
+                {
+                    // Обработка исключения
+                    MessageBox.Show("Не удалось добавить сотрудника. " + ex.Message);
+                    return false;
+                }
             }
         }
 
+        public class DelEmpDataAccess
+        {
+            private readonly string _connectionString = ConfigurationManager.ConnectionStrings["WorkTabelDB"].ConnectionString;
+
+            public bool DeleteEmployee(Employee employee)
+            {
+                try
+                {
+                    using (var connection = new MySqlConnection(_connectionString))
+                    {
+                        connection.Open();
+
+                        using (var command = new MySqlCommand("DELETE FROM Employees WHERE EmployeeID = @EmployeeID", connection))
+                        {
+                            command.Parameters.AddWithValue("@EmployeeID", employee.EmployeeID);
+                            int rowsAffected = command.ExecuteNonQuery();
+                            return rowsAffected > 0;
+                        }
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    MessageBox.Show("Не удалось удалить сотрудника. " + ex.Message);
+                    return false;
+                }
+            }
+        }
+        //-10
 
     }
 }

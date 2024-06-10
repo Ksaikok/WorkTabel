@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="DocX" Version="3.0.0" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="linq2db" Version="5.4.1" />
     <PackageReference Include="MaterialDesignColors" Version="3.0.0" />
@@ -19,10 +20,6 @@
     <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.2" />
     <PackageReference Include="MySqlConnector" Version="2.3.7" />
     <PackageReference Include="SpecFlow" Version="3.9.74" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Collections.ObjectModel;
 using WorkTabel.Model.ObIrtish;
-using static WorkTabel.Model.Data.DataAccess;
+using static WorkTabel.DataAccessLayer.Data.DataAccess;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WorkTabel.ViewModels.Base;
@@ -14,8 +14,6 @@ using System.Windows.Controls;
 using static MaterialDesignThemes.Wpf.Theme;
 using System.Globalization;
 using System.Windows.Data;
-using WorkTabel.Model.Data;
-using WorkTabel.Model.Turniket;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 
@@ -50,6 +48,7 @@ namespace WorkTabel.ViewModels
             ShowAuthorizationWindow();
 
             LoadAttendanceCommand = new RelayCommand(LoadAttendance);
+            ShowAboutCommand = new RelayCommand(ShowAboutInfo); //настя 10.06
         }
 
         // Событие PropertyChanged, наследуемое от ViewModel
@@ -75,7 +74,45 @@ namespace WorkTabel.ViewModels
         //----------------------------------------------------------------
         private readonly EmployeeDataAccess _employeeDataAccess; //05
 
+        //10
+        public void ShowAboutInfo()
+        {
+            MessageBox.Show("ТАБЕЛЬ\n\nРабота с календарём происходит в следующем формате: выбирается отдел, год, месяц, после того как необходимые данные выбраны, нужно нажать на кнопку «Загрузить» и в основной рабочей области появится табель с выбранным диапазоном.\n" +
+                "\nСОТРУДНИКИ\n\nПо нажатию на отдел происходит фильтрация сотрудников по их отделам. По нажатию на слово «Сотрудники» происходит вывод полного списка работников. Это необходимо для того, чтобы после фильтрации по отделам можно было вернуться к общему списку. Правее расположен поиск по ФИО. Редактирование данных о работниках происходит внутри окна с информацией. Необходимо просто кликнуть на любую строку, изменить содержимое и нажать кнопку «Сохранить изменения». Изменённые данные отобразятся сразу, после сохранения.", "О программе");
+        }
+        public ICommand ShowAboutCommand { get; }
+        // В конструкторе ViewModel:
 
+
+        public bool IsGuestMode { get; }
+
+        public MainViewModel(bool isGuestMode)
+        {
+            IsGuestMode = isGuestMode;
+            // Инициализация других данных
+        }
+
+        private RelayCommand _openAddEmployeeWindowCommand;
+        public RelayCommand OpenAddEmployeeWindowCommand => _openAddEmployeeWindowCommand ?? (_openAddEmployeeWindowCommand = new RelayCommand(OpenAddEmployeeWindow));
+
+        private void OpenAddEmployeeWindow()
+        {
+            var addEmployeeWindow = new AddEmpWindow
+            {
+                DataContext = new AddEmployeeViewModel()
+            };
+
+            addEmployeeWindow.ShowDialog();
+        }
+        public ICommand ResetFilterCommand => new RelayCommand(ResetFilter);
+
+        private void ResetFilter()
+        {
+            SelectedDepartment = null;
+            SearchText = string.Empty;
+            FilterEmployeesByDepartment();
+        }
+        //-10
         // Метод для загрузки сотрудников и установки названия отдела
         private IEnumerable<Employee> LoadEmployeesWithDepartPositions()
         {

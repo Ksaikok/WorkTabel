@@ -3,62 +3,58 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WorkTabel.Model.Data;
 using WorkTabel.Model.ObIrtish;
-using static WorkTabel.Model.Data.DataAccess;
+using static WorkTabel.DataAccessLayer.Data.DataAccess;
 
-namespace WorkTabel.Model.Turniket
+namespace WorkTabel.Services
 {
     public class TurnikSim
     {
         private Random _random = new Random();
-
         public List<Attendance> GenerateAttendances(int departmentID, int year, int month, List<Employee> employees)
         {
             var attendances = new List<Attendance>();
             int daysInMonth = DateTime.DaysInMonth(year, month);
-
-            foreach (var employee in employees)
-            {
+            foreach (var employee in employees){
                 for (int day = 1; day <= daysInMonth; day++)
                 {
                     var attendanceDate = new DateTime(year, month, day);
-                    var attendanceTypeID = GenerateAttendanceType();
+                    var attendanceType = GenerateAttendanceType();
                     var timeIn = GenerateTimeIn();
                     var timeOut = GenerateTimeOut(timeIn);
-
                     attendances.Add(new Attendance
                     {
                         AttendanceDate = attendanceDate,
                         TimeIn = timeIn,
                         TimeOut = timeOut,
                         WorkedOut = (int)(timeOut - timeIn).TotalHours,
-                        EmployeeID = employee.EmployeeID,
-                        AttendanceTypeID = attendanceTypeID
-                    });
+                        EmployeeID = employee,
+                        AttendanceTypeID = attendanceType 
+                    });                    
                 }
             }
-
             return attendances;
         }
-
-        private int GenerateAttendanceType()
+        private AttendanceType GenerateAttendanceType()
         {
-            // Example: 1 - Явка, 2 - Неявка, 3 - Больничные и т.д.
-            return _random.Next(1, 4);
+            var types = new List<AttendanceType>
+        {
+            new AttendanceType { AttendanceTypeID = 1, TypeName = "Явка", Abbreviation = "Я" },
+            new AttendanceType { AttendanceTypeID = 2, TypeName = "Неявка (невыясненные обстоятельства)", Abbreviation = "НН" },
+            new AttendanceType { AttendanceTypeID = 3, TypeName = "Больничные", Abbreviation = "Б" }
+        };
+            int index = _random.Next(types.Count);
+            return types[index];
         }
-
         private DateTime GenerateTimeIn()
         {
-            // Example: employees arrive between 8:00 and 10:00
-            return DateTime.Today.AddHours(8).AddMinutes(_random.Next(0, 120));
+            return DateTime.Today.AddHours(8).AddMinutes(_random.Next(0, 59));
         }
-
         private DateTime GenerateTimeOut(DateTime timeIn)
         {
-            // Example: employees leave between 16:00 and 18:00
-            return timeIn.AddHours(8).AddMinutes(_random.Next(0, 120));
+            return timeIn.AddHours(8).AddMinutes(_random.Next(0, 59));
         }
     }
+
 
 }
